@@ -1,0 +1,54 @@
+# Tiny configuration reserved for fast software/integration tests in later phases.
+project:
+  name: "VYREX AI"
+  version: "0.1.0-smoke"
+  seed: 42
+  language: "en"
+  mode: "hybrid"
+model:
+  architecture: "decoder_only_transformer"
+  vocab_size: 2048
+  hidden_size: 128
+  num_layers: 2
+  num_heads: 4
+  intermediate_size: 256
+  max_seq_len: 128
+  positional_encoding: "rope"
+  norm: "rmsnorm"
+  mlp: "swiglu"
+  dropout: 0.0
+  tie_embeddings: true
+training:
+  learning_rate: 0.0003
+  min_learning_rate: 0.00003
+  weight_decay: 0.01
+  betas: [0.9, 0.95]
+  micro_batch_size: 2
+  gradient_accumulation_steps: 1
+  max_steps: 10
+  warmup_steps: 1
+  gradient_clip_norm: 1.0
+  precision: "fp32"
+  log_every_steps: 1
+  eval_every_steps: 5
+  checkpoint_every_steps: 5
+  num_workers: 0
+data:
+  tokenizer_name: "vyrex-bpe-en-smoke"
+  tokenizer_vocab_size: 2048
+  train_split: 0.98
+  validation_split: 0.01
+  test_split: 0.01
+  mixture:
+    general: 0.60
+    education: 0.25
+    coding: 0.15
+  max_document_chars: 100000
+paths:
+  data_dir: "data"
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  splits_dir: "data/splits"
+  checkpoints_dir: "checkpoints"
+  logs_dir: "logs"
+  tokenizer_dir: "artifacts/tokenizer"

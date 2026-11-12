@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vyrex-ai"
+version = "0.1.0"
+description = "A from-scratch, English-language hybrid decoder-only language model."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Proprietary - set project license before public release" }
+authors = [{ name = "VYREX AI Project" }]
+dependencies = [
+  "PyYAML>=6.0,<7.0",
+  "tokenizers>=0.21,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0,<10.0",
+  "ruff>=0.6,<1.0",
+]
+training = [
+  "numpy>=1.26,<3.0",
+  "torch>=2.2",
+]
+
+[project.scripts]
+vyrex = "vyrex_ai.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
