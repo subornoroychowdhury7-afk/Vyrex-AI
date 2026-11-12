@@ -1,9 +1,10 @@
-﻿"""Command-line interface for VYREX AI project tools."""
+"""Command-line interface for VYREX AI project tools."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import random
 from pathlib import Path
 
 from vyrex_ai import __version__
@@ -104,6 +105,45 @@ def build_parser() -> argparse.ArgumentParser:
         "--overwrite",
         action="store_true",
         help="Explicitly allow replacing existing tokenizer artifacts",
+    )
+
+    train = subparsers.add_parser(
+        "train",
+        help="Train the decoder-only language model",
+    )
+    train.add_argument(
+        "--config",
+        default="configs/smoke.yaml",
+        help="Training configuration YAML (defaults to the safe smoke config)",
+    )
+    train.add_argument(
+        "--dataset",
+        required=True,
+        help="Prepared dataset directory containing train.jsonl and validation.jsonl",
+    )
+    train.add_argument(
+        "--tokenizer",
+        required=True,
+        help="Path to tokenizer.json",
+    )
+    train.add_argument(
+        "--checkpoint-dir",
+        required=True,
+        help="New or explicitly resumed checkpoint directory",
+    )
+    train.add_argument(
+        "--device",
+        choices=("cpu", "cuda"),
+        help="Training device (defaults to CUDA when available, otherwise CPU)",
+    )
+    train.add_argument(
+        "--resume",
+        help="Resume from a checkpoint located inside --checkpoint-dir",
+    )
+    train.add_argument(
+        "--max-validation-batches",
+        type=int,
+        help="Optional limit on validation batches per evaluation",
     )
 
     return parser
@@ -218,6 +258,255 @@ def load_exclusions(
     return exclusions
 
 
+def _reject_symlink_components(path: Path, description: str) -> None:
+    """Reject symlinks and junctions in every existing path component."""
+    candidate = Path(path).expanduser()
+
+    if ".." in candidate.parts:
+        raise ValueError(f"{description} must not contain '..' path components")
+
+    if not candidate.is_absolute():
+        candidate = Path.cwd() / candidate
+
+    current = Path(candidate.anchor)
+
+    for part in candidate.parts[1:]:
+        current = current / part
+        is_junction = getattr(current, "is_junction", lambda: False)()
+        if current.is_symlink() or is_junction:
+            raise ValueError(
+                f"{description} cannot traverse a symbolic link or junction"
+            )
+
+
+def run_training(args, config, logger) -> None:
+    """Run guarded single-process training from prepared JSONL files."""
+    if config.curriculum is not None:
+        raise ValueError(
+            "This trainer does not yet implement curriculum progression. "
+            "Use a non-curriculum configuration; the V2 configuration "
+            "has not been modified."
+        )
+
+    if config.training.num_workers != 0:
+        raise ValueError(
+            "The initial training CLI requires training.num_workers=0. "
+            "Set it to 0 in the selected configuration until multi-worker "
+            "streaming has dedicated integration tests."
+        )
+
+    if (
+        args.max_validation_batches is not None
+        and args.max_validation_batches < 1
+    ):
+        raise ValueError("--max-validation-batches must be positive")
+
+    dataset_directory = Path(args.dataset).resolve()
+    tokenizer_path = Path(args.tokenizer).resolve()
+    checkpoint_argument = Path(args.checkpoint_dir).expanduser()
+    _reject_symlink_components(
+        checkpoint_argument,
+        "Checkpoint directory",
+    )
+    checkpoint_directory = checkpoint_argument.resolve()
+    train_path = dataset_directory / "train.jsonl"
+    validation_path = dataset_directory / "validation.jsonl"
+
+    if not dataset_directory.is_dir():
+        raise NotADirectoryError(
+            f"Dataset directory does not exist: {dataset_directory}"
+        )
+
+    for required_file in (train_path, validation_path):
+        if not required_file.is_file():
+            raise FileNotFoundError(
+                f"Required dataset split does not exist: {required_file}"
+            )
+
+    if not tokenizer_path.is_file():
+        raise FileNotFoundError(
+            f"Tokenizer file does not exist: {tokenizer_path}"
+        )
+
+    if (
+        checkpoint_directory == dataset_directory
+        or dataset_directory in checkpoint_directory.parents
+    ):
+        raise ValueError(
+            "Checkpoint directory must not be inside the dataset directory"
+        )
+
+    if tokenizer_path.is_relative_to(checkpoint_directory):
+        raise ValueError(
+            "Checkpoint directory must not contain the tokenizer artifact"
+        )
+
+    resume_argument = (
+        Path(args.resume).expanduser()
+        if args.resume is not None
+        else None
+    )
+
+    if resume_argument is not None:
+        _reject_symlink_components(
+            resume_argument,
+            "Resume checkpoint",
+        )
+
+    resume_path = (
+        resume_argument.resolve()
+        if resume_argument is not None
+        else None
+    )
+
+    if resume_path is not None:
+        if resume_path.name not in {"latest.pt", "best.pt"}:
+            raise ValueError(
+                "--resume must reference latest.pt or best.pt"
+            )
+        if resume_path.parent != checkpoint_directory:
+            raise ValueError(
+                "--resume must point to a checkpoint directly inside "
+                "--checkpoint-dir"
+            )
+        if not resume_path.is_file():
+            raise FileNotFoundError(
+                f"Resume checkpoint does not exist: {resume_path}"
+            )
+
+    if checkpoint_directory.exists():
+        if not checkpoint_directory.is_dir():
+            raise NotADirectoryError(
+                f"Checkpoint path is not a directory: {checkpoint_directory}"
+            )
+
+        for checkpoint_name in ("latest.pt", "best.pt"):
+            _reject_symlink_components(
+                checkpoint_directory / checkpoint_name,
+                f"Checkpoint file {checkpoint_name}",
+            )
+
+        existing_entries = list(checkpoint_directory.iterdir())
+
+        if existing_entries and resume_path is None:
+            raise FileExistsError(
+                "Checkpoint directory is not empty. Choose a new directory "
+                "or explicitly pass --resume with a checkpoint in it: "
+                f"{checkpoint_directory}"
+            )
+
+        if resume_path is not None:
+            unexpected = [
+                entry
+                for entry in existing_entries
+                if entry not in {
+                    resume_path,
+                    checkpoint_directory / "latest.pt",
+                    checkpoint_directory / "best.pt",
+                }
+            ]
+            if unexpected:
+                raise FileExistsError(
+                    "Checkpoint directory contains unexpected files: "
+                    + ", ".join(str(item) for item in unexpected)
+                )
+
+    # Load optional training dependencies only for the train command.
+    import numpy as np
+    import torch
+    from torch.utils.data import DataLoader
+
+    from vyrex_ai.data.dataset import TokenBlockDataset
+    from vyrex_ai.models import VyrexConfig, VyrexTransformer
+    from vyrex_ai.trainer import train_model
+
+    tokenizer = VyrexTokenizer.load(tokenizer_path)
+
+    if tokenizer.vocab_size > config.model.vocab_size:
+        raise ValueError(
+            "Tokenizer vocabulary exceeds model vocabulary: "
+            f"{tokenizer.vocab_size} > {config.model.vocab_size}"
+        )
+
+    train_dataset = TokenBlockDataset(
+        train_path,
+        tokenizer,
+        config.model.max_seq_len,
+    )
+    validation_dataset = TokenBlockDataset(
+        validation_path,
+        tokenizer,
+        config.model.max_seq_len,
+    )
+
+    # Fail before creating a model or checkpoint directory if either split
+    # cannot produce a complete causal-LM token block.
+    if next(iter(train_dataset), None) is None:
+        raise ValueError(
+            "Training split contains insufficient tokens for one complete "
+            f"{config.model.max_seq_len + 1}-token block"
+        )
+
+    if next(iter(validation_dataset), None) is None:
+        raise ValueError(
+            "Validation split contains insufficient tokens for one complete "
+            f"{config.model.max_seq_len + 1}-token block"
+        )
+
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=config.training.micro_batch_size,
+        num_workers=0,
+        drop_last=False,
+    )
+    validation_loader = DataLoader(
+        validation_dataset,
+        batch_size=config.training.micro_batch_size,
+        num_workers=0,
+        drop_last=False,
+    )
+
+    random.seed(config.project.get("seed", 42))
+    np.random.seed(config.project.get("seed", 42))
+    torch.manual_seed(config.project.get("seed", 42))
+
+    model_config = VyrexConfig(
+        vocab_size=config.model.vocab_size,
+        hidden_size=config.model.hidden_size,
+        num_layers=config.model.num_layers,
+        num_heads=config.model.num_heads,
+        intermediate_size=config.model.intermediate_size,
+        max_seq_len=config.model.max_seq_len,
+        dropout=config.model.dropout,
+        tie_embeddings=config.model.tie_embeddings,
+    )
+    model = VyrexTransformer(model_config)
+
+    logger.info("Starting VYREX AI training")
+    logger.info("Dataset: %s", dataset_directory)
+    logger.info("Tokenizer: %s", tokenizer_path)
+    logger.info("Checkpoint directory: %s", checkpoint_directory)
+
+    result = train_model(
+        model=model,
+        train_loader=train_loader,
+        validation_loader=validation_loader,
+        training_config=config.training,
+        checkpoint_dir=checkpoint_directory,
+        device=args.device,
+        resume_from=resume_path,
+        max_validation_batches=args.max_validation_batches,
+    )
+
+    print("VYREX AI TRAINING COMPLETE")
+    print(f"Completed steps: {result['completed_steps']}")
+    print(f"Device: {result['device']}")
+    print(f"Precision: {result['precision']}")
+    print(f"Best validation loss: {result['best_validation_loss']}")
+    print(f"Checkpoint directory: {checkpoint_directory}")
+    print("Training and validation source files were not modified.")
+
+
 def main() -> None:
     args = build_parser().parse_args()
 
@@ -305,6 +594,10 @@ def main() -> None:
 
     config = load_config(args.config)
     logger = configure_logging(config.paths["logs_dir"])
+
+    if args.command == "train":
+        run_training(args, config, logger)
+        return
 
     if args.command == "show-config":
         logger.info("Configuration validated: %s", Path(args.config))

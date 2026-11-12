@@ -1,4 +1,4 @@
-﻿"""Data ingestion, quality, splitting, and export for VYREX AI."""
+"""Data ingestion, quality, splitting, and export for VYREX AI."""
 
 from .corpus import CorpusStats, inspect_training_corpus, iter_training_texts
 from .deduplication import DeduplicationResult, deduplicate_documents

@@ -27,3 +27,7 @@ mlruns/
 # Generated audit reports; preserve locally unless explicitly approved.
 reports/*
 !reports/README.md
+
+# Local synthetic smoke-test data and generated tokenizer artifacts.
+data/smoke/
+tokenizers/
