@@ -23,3 +23,7 @@ artifacts/
 outputs/
 wandb/
 mlruns/
+
+# Generated audit reports; preserve locally unless explicitly approved.
+reports/*
+!reports/README.md
