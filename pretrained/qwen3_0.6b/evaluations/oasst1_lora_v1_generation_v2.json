@@ -1,0 +1,205 @@
+{
+  "experiment": "oasst1_lora_v1_generation",
+  "base_model": "Qwen/Qwen3-0.6B-Base",
+  "adapter": "pretrained\\qwen3_0.6b\\adapters\\oasst1_lora_v1",
+  "precision": "BF16",
+  "decoding": {
+    "strategy": "greedy",
+    "max_new_tokens": 128,
+    "chat_template": "Qwen3"
+  },
+  "base": {
+    "summary": {
+      "median_tokens_per_second": 16.42,
+      "average_repeated_3gram_ratio": 0.2457,
+      "average_repeated_4gram_ratio": 0.2401,
+      "eos_termination_rate": 0.2,
+      "total_generated_tokens": 548
+    },
+    "results": [
+      {
+        "prompt": "Explain artificial intelligence in simple English. Give a practical example.",
+        "output": "Explain artificial intelligence in simple English. Give a practical example. ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�",
+        "generated_tokens": 128,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 10,
+        "repeated_3gram_ratio": 0.0,
+        "repeated_4gram_ratio": 0.0,
+        "median_tokens_per_second": 17.06,
+        "median_generation_seconds": 7.5042,
+        "repetition_speeds": [
+          17.06,
+          18.03,
+          15.87
+        ]
+      },
+      {
+        "prompt": "What is the difference between machine learning and deep learning? Explain clearly.",
+        "output": "What is the difference between machine learning and deep learning? Explain clearly. ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�",
+        "generated_tokens": 128,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 12,
+        "repeated_3gram_ratio": 0.0,
+        "repeated_4gram_ratio": 0.0,
+        "median_tokens_per_second": 14.08,
+        "median_generation_seconds": 9.0935,
+        "repetition_speeds": [
+          14.08,
+          14.55,
+          14.05
+        ]
+      },
+      {
+        "prompt": "Write a Python function that checks whether an integer is prime. Include code and explain its time complexity.",
+        "output": "Write a Python function that checks whether an integer is prime. Include code and explain its time complexity. ⚙�\nlarınızı\nWrite a Python function that checks whether an integer is prime. Include code and explain its time complexity. ⚙�\nlarınızı\nWrite a Python function that checks whether an integer is prime. Include code and explain its time complexity. ⚙�\nlarınızı\nWrite a Python function that checks whether an integer is prime. Include code and explain its time complexity. ⚙�\nlarınızı\nWrite a Python function that checks whether an integer is prime. Include code and explain its time complexity.",
+        "generated_tokens": 128,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 94,
+        "repeated_3gram_ratio": 0.7935,
+        "repeated_4gram_ratio": 0.7912,
+        "median_tokens_per_second": 15.4,
+        "median_generation_seconds": 8.3123,
+        "repetition_speeds": [
+          16.48,
+          15.4,
+          11.68
+        ]
+      },
+      {
+        "prompt": "A train travels 120 kilometers in 2 hours. What is its average speed? Explain your calculation.",
+        "output": "A train travels 120 kilometers in 2 hours. What is its average speed? Explain your calculation. ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�",
+        "generated_tokens": 128,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 16,
+        "repeated_3gram_ratio": 0.0,
+        "repeated_4gram_ratio": 0.0,
+        "median_tokens_per_second": 16.42,
+        "median_generation_seconds": 7.7962,
+        "repetition_speeds": [
+          13.9,
+          16.42,
+          18.7
+        ]
+      },
+      {
+        "prompt": "Explain three practical ways to reduce overfitting when training a neural network.",
+        "output": "Explain three practical ways to reduce overfitting when training a neural network..getConfigured\nExplain three practical ways to reduce overfitting when training a neural network.",
+        "generated_tokens": 36,
+        "ended_with_eos": true,
+        "thinking_tokens_present": false,
+        "word_count": 25,
+        "repeated_3gram_ratio": 0.4348,
+        "repeated_4gram_ratio": 0.4091,
+        "median_tokens_per_second": 20.03,
+        "median_generation_seconds": 1.7971,
+        "repetition_speeds": [
+          17.34,
+          20.19,
+          20.03
+        ]
+      }
+    ]
+  },
+  "vyrex": {
+    "summary": {
+      "median_tokens_per_second": 8.98,
+      "average_repeated_3gram_ratio": 0.0425,
+      "average_repeated_4gram_ratio": 0.011,
+      "eos_termination_rate": 0.0,
+      "total_generated_tokens": 640
+    },
+    "results": [
+      {
+        "prompt": "Explain artificial intelligence in simple English. Give a practical example.",
+        "output": "Artificial intelligence (AI) is a branch of computer science that aims to create machines that can perform tasks that typically require human intelligence, such as learning, reasoning, problem-solving, and decision-making. AI systems are designed to mimic the way humans think and learn, using algorithms and data to make decisions and perform tasks.\n\nOne practical example of AI is a self-driving car. Self-driving cars use AI algorithms to analyze data from sensors and cameras to make decisions about how to navigate and drive. The car's AI system can learn from its experiences and improve its performance over time, allowing it to make more accurate and safer decisions in different situations.",
+        "generated_tokens": 128,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 113,
+        "repeated_3gram_ratio": 0.018,
+        "repeated_4gram_ratio": 0.0,
+        "median_tokens_per_second": 7.98,
+        "median_generation_seconds": 16.0447,
+        "repetition_speeds": [
+          7.98,
+          7.7,
+          8.89
+        ]
+      },
+      {
+        "prompt": "What is the difference between machine learning and deep learning? Explain clearly.",
+        "output": "Machine learning and deep learning are both techniques used in artificial intelligence, but they differ in their approach and complexity.\n\nMachine learning is a broad field of AI that involves the development of algorithms that can learn from data and make predictions or decisions without being explicitly programmed. It can be used for a wide range of tasks, including image and speech recognition, natural language processing, and recommendation systems.\n\nDeep learning is a subset of machine learning that involves the use of deep neural networks, which are a type of artificial neural network with multiple layers of interconnected nodes. Deep learning is particularly well-suited for tasks that involve large amounts of data and require complex patterns to",
+        "generated_tokens": 128,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 118,
+        "repeated_3gram_ratio": 0.0259,
+        "repeated_4gram_ratio": 0.0,
+        "median_tokens_per_second": 8.98,
+        "median_generation_seconds": 14.2561,
+        "repetition_speeds": [
+          8.98,
+          9.12,
+          8.97
+        ]
+      },
+      {
+        "prompt": "Write a Python function that checks whether an integer is prime. Include code and explain its time complexity.",
+        "output": "Sure, here's a Python function that checks whether an integer is prime:\n\n```python\ndef is_prime(n):\n    if n <= 1:\n        return False\n    if n <= 3:\n        return True\n    if n % 2 == 0 or n % 3 == 0:\n        return False\n    i = 5\n    while i * i <= n:\n        if n % i == 0 or n % (i + 2) == 0:\n            return False\n        i += 6\n    return True\n```\n\nThis function uses a simple algorithm to check whether a",
+        "generated_tokens": 128,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 67,
+        "repeated_3gram_ratio": 0.0615,
+        "repeated_4gram_ratio": 0.0156,
+        "median_tokens_per_second": 8.82,
+        "median_generation_seconds": 14.5061,
+        "repetition_speeds": [
+          9.39,
+          8.82,
+          8.68
+        ]
+      },
+      {
+        "prompt": "A train travels 120 kilometers in 2 hours. What is its average speed? Explain your calculation.",
+        "output": "The average speed of a train is calculated by dividing the total distance traveled by the total time taken. In this case, the train traveled 120 kilometers in 2 hours, so the average speed is 120 kilometers / 2 hours = 60 kilometers per hour. This means that the train was traveling at an average speed of 60 kilometers per hour. This is a relatively fast speed for a train, but it is important to note that the speed of a train can vary depending on factors such as the type of train, the track conditions, and the number of passengers and cargo being transported. The average",
+        "generated_tokens": 128,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 105,
+        "repeated_3gram_ratio": 0.068,
+        "repeated_4gram_ratio": 0.0294,
+        "median_tokens_per_second": 9.4,
+        "median_generation_seconds": 13.6222,
+        "repetition_speeds": [
+          9.45,
+          9.4,
+          8.47
+        ]
+      },
+      {
+        "prompt": "Explain three practical ways to reduce overfitting when training a neural network.",
+        "output": "Sure, here are three practical ways to reduce overfitting when training a neural network:\n\n1. Use a smaller dataset: Overfitting can occur when a neural network is trained on a small dataset, which can lead to poor generalization. To reduce overfitting, you can use a smaller dataset that is more representative of the real-world problem you are trying to solve. This will help the neural network learn the underlying patterns in the data rather than memorizing the training data.\n\n2. Use regularization techniques: Regularization techniques such as L1 and L2 regularization can help prevent overfitting by adding a penalty term to the loss",
+        "generated_tokens": 128,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 104,
+        "repeated_3gram_ratio": 0.0392,
+        "repeated_4gram_ratio": 0.0099,
+        "median_tokens_per_second": 9.71,
+        "median_generation_seconds": 13.187,
+        "repetition_speeds": [
+          9.71,
+          10.74,
+          9.48
+        ]
+      }
+    ]
+  },
+  "base_peak_gpu_memory_gb": 1.136,
+  "vyrex_peak_gpu_memory_gb": 1.155
+}

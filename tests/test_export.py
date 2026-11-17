@@ -181,3 +181,47 @@ def test_oanc_metadata_never_enters_training_jsonl(tmp_path: Path):
 
     assert records == [{"text": original}]
     assert "Metadata Only" not in result.train_path.read_text(encoding="utf-8")
+
+
+def test_export_includes_oanc_document_classification(tmp_path: Path):
+    raw = tmp_path / "OANC-GrAF"
+    source = (
+        raw / "data" / "spoken" / "telephone"
+        / "switchboard" / "sample.txt"
+    )
+    source.parent.mkdir(parents=True)
+    source.write_text("Natural spoken English conversation. " * 10,
+                      encoding="utf-8")
+
+    metadata = source.with_suffix(".anc")
+    metadata.write_text(
+        """<cesHeader>
+            <fileDesc>
+                <titleStmt><title>Telephone Sample</title></titleStmt>
+            </fileDesc>
+        </cesHeader>""",
+        encoding="utf-8",
+    )
+
+    groups = {str(source.resolve()): "switchboard"}
+    report = prepare_dataset(raw, groups, (1.0, 0.0, 0.0))
+
+    result = export_dataset(
+        report,
+        groups,
+        tmp_path / "processed",
+        corpus_root=raw,
+    )
+
+    records = [
+        json.loads(line)
+        for line in result.manifest_path.read_text(
+            encoding="utf-8"
+        ).splitlines()
+    ]
+
+    assert len(records) == 1
+    assert records[0]["metadata"]["document_type"] == "spoken"
+    assert records[0]["metadata"]["collection"] == "switchboard"
+    assert records[0]["metadata"]["genre"] == "telephone"
+

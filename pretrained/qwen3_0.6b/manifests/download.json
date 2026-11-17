@@ -1,0 +1,7 @@
+{
+  "repository": "Qwen/Qwen3-0.6B-Base",
+  "revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+  "license": "Apache-2.0",
+  "model_type": "Qwen3",
+  "local_directory": "C:\\Users\\Suborno\\Vyrex AI\\vyrex-ai-phase1\\pretrained\\qwen3_0.6b\\original"
+}

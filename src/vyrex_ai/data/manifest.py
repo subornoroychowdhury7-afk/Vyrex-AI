@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -23,6 +24,7 @@ class ManifestEntry:
     metadata: dict | None = None
     metadata_error: str | None = None
     exclusion_reason: str | None = None
+    license_evidence: dict | None = None
 
 
 def build_manifest(
@@ -32,6 +34,13 @@ def build_manifest(
 ) -> tuple[ManifestEntry, ...]:
     """Build an audit record for every read, excluded, or failed document."""
     metadata_by_path = metadata_by_path or {}
+    license_by_path = {
+        os.path.normcase(str(Path(record.source_path).resolve())): asdict(record)
+        for record in report.license_records
+    }
+    def license_for(source_path: str) -> dict | None:
+        key = os.path.normcase(str(Path(source_path).resolve()))
+        return license_by_path.get(key)
 
     validation_by_path = {
         result.source_path: result
@@ -73,6 +82,7 @@ def build_manifest(
                     issues=issues,
                     metadata=metadata,
                     metadata_error=metadata_error,
+                    license_evidence=license_for(source_path),
                 )
             )
             continue
@@ -90,6 +100,7 @@ def build_manifest(
                     duplicate_of=duplicate.duplicate_of,
                     metadata=metadata,
                     metadata_error=metadata_error,
+                    license_evidence=license_for(source_path),
                 )
             )
             continue
@@ -105,6 +116,7 @@ def build_manifest(
                 issues=issues,
                 metadata=metadata,
                 metadata_error=metadata_error,
+                license_evidence=license_for(source_path),
             )
         )
 
@@ -123,6 +135,7 @@ def build_manifest(
                 metadata=metadata_record.get("metadata"),
                 metadata_error=metadata_record.get("error"),
                 exclusion_reason=quarantined.reason,
+                license_evidence=license_for(source_path),
             )
         )
 
@@ -139,6 +152,7 @@ def build_manifest(
                 failure_reason=failure.reason,
                 metadata=metadata_record.get("metadata"),
                 metadata_error=metadata_record.get("error"),
+                license_evidence=license_for(failure.source_path),
             )
         )
 

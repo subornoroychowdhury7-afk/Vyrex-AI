@@ -1,0 +1,20 @@
+{
+  "experiment": "oasst1_1_7b_nf4",
+  "model": "Qwen/Qwen3-1.7B-Base",
+  "dataset": "OASST1 Qwen3 SFT v1",
+  "split": "test",
+  "quantization": "NF4 4-bit double quantization",
+  "compute_dtype": "BF16",
+  "base_model_precision_comparison": "Compare cautiously against 0.6B BF16 results because quantization differs.",
+  "gpu": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "result": {
+    "loss": 1.5085682811099344,
+    "perplexity": 4.5202544256017845,
+    "supervised_tokens": 64196,
+    "examples": 312,
+    "seconds": 81.83,
+    "tokens_per_second": 784.55
+  },
+  "peak_gpu_allocated_gb": 1.992,
+  "peak_gpu_reserved_gb": 2.072
+}

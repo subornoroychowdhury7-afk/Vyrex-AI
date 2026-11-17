@@ -1,0 +1,24 @@
+{
+  "experiment": "oasst1_lora_v1",
+  "base_model": "Qwen/Qwen3-0.6B-Base",
+  "adapter": "pretrained\\qwen3_0.6b\\adapters\\oasst1_lora_v1",
+  "dataset": "OASST1 Qwen3 SFT v1",
+  "split": "test",
+  "precision": "BF16",
+  "base": {
+    "loss": 1.641911548428821,
+    "perplexity": 5.165033292959837,
+    "supervised_tokens": 64196,
+    "examples": 312,
+    "seconds": 34.61
+  },
+  "vyrex_best_adapter": {
+    "loss": 1.4673911897312735,
+    "perplexity": 4.337903599113898,
+    "supervised_tokens": 64196,
+    "examples": 312,
+    "seconds": 45.8
+  },
+  "test_loss_improvement_percent": 10.62909624239805,
+  "peak_gpu_allocated_gb": 1.862
+}

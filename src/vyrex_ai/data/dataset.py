@@ -57,18 +57,16 @@ class TokenBlockDataset(IterableDataset[torch.Tensor]):
 
     def __iter__(self) -> Iterator[torch.Tensor]:
         worker = get_worker_info()
-        worker_id = worker.id if worker is not None else 0
-        worker_count = worker.num_workers if worker is not None else 1
+        if worker is not None and worker.num_workers > 1:
+            raise RuntimeError(
+                "TokenBlockDataset currently requires num_workers=0. "
+                "Multi-worker token-stream sharding is not implemented."
+            )
 
         pending: list[int] = []
 
         with self.jsonl_path.open("r", encoding="utf-8") as handle:
             for line_number, line in enumerate(handle, start=1):
-                # Shard documents before parsing and tokenizing them.
-                # Each worker processes only its assigned records.
-                if (line_number - 1) % worker_count != worker_id:
-                    continue
-
                 if not line.strip():
                     raise ValueError(
                         f"Blank JSONL record at line {line_number}"

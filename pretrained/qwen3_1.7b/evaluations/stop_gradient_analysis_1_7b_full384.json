@@ -1,0 +1,269 @@
+{
+  "experiment": "Vyrex Qwen3-1.7B full384 STOP gradient diagnostic",
+  "adapter": "pretrained\\qwen3_1.7b\\adapters\\vyrex_1_7b_qlora_full_v1\\epoch_01_best",
+  "base_quantization": "NF4 double quantization",
+  "compute_dtype": "BF16",
+  "stop_token_id": 151645,
+  "stop_token_weight": 5.0,
+  "validation": {
+    "examples": 338,
+    "stop_tokens": 338,
+    "ordinary_tokens": 62159,
+    "stop_mean_cross_entropy": 8.242326183431953,
+    "ordinary_mean_cross_entropy": 1.332083799051988,
+    "stop_to_ordinary_mean_ce_ratio": 6.187543298175248,
+    "unweighted_loss": 1.3694561837411798,
+    "weighted_loss": 1.5149889288050324
+  },
+  "gradient_analysis": {
+    "sample_count": 16,
+    "selection": "16 examples distributed across sorted response lengths",
+    "trainable_parameters": 8716288,
+    "stop_component_gradient_norm": {
+      "mean": 0.7491242675683706,
+      "median": 0.14185211541195458,
+      "min": 0.02091055373570854,
+      "max": 4.986028202721225
+    },
+    "ordinary_component_gradient_norm": {
+      "mean": 2.630190042779915,
+      "median": 1.8430390917342683,
+      "min": 0.9261939303487031,
+      "max": 9.480474183808651
+    },
+    "stop_to_ordinary_gradient_norm_ratio": {
+      "mean": 0.2718025832378697,
+      "median": 0.05236999957879704,
+      "min": 0.012548643846731778,
+      "max": 1.785151917027103
+    },
+    "stop_gradient_fraction_of_component_norms": {
+      "mean": 0.15066284438577626,
+      "median": 0.04974745605292956,
+      "min": 0.012393126910978563,
+      "max": 0.640953158107293
+    },
+    "gradient_cosine_similarity": {
+      "mean": -0.10573192180560344,
+      "median": -0.018257298019998675,
+      "min": -0.5670887022585887,
+      "max": 0.04108232551069731
+    },
+    "per_example": [
+      {
+        "example_index": 40,
+        "ordinary_tokens": 11,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 1.7647315462755948,
+        "ordinary_component_gradient_norm": 9.480474183808651,
+        "stop_to_ordinary_gradient_norm_ratio": 0.1861438058962825,
+        "stop_gradient_fraction_of_component_norms": 0.1569319040161637,
+        "gradient_cosine_similarity": 0.005836485071907554,
+        "combined_gradient_norm": 9.653443049623466,
+        "stop_component_loss": 2.484375,
+        "ordinary_component_loss": 1.7421875
+      },
+      {
+        "example_index": 165,
+        "ordinary_tokens": 29,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.1915081240201759,
+        "ordinary_component_gradient_norm": 7.252793613662637,
+        "stop_to_ordinary_gradient_norm_ratio": 0.026404739224816426,
+        "stop_gradient_fraction_of_component_norms": 0.025725465029281122,
+        "gradient_cosine_similarity": -0.37242558042340435,
+        "combined_gradient_norm": 7.18367005556747,
+        "stop_component_loss": 1.1640625,
+        "ordinary_component_loss": 1.96875
+      },
+      {
+        "example_index": 47,
+        "ordinary_tokens": 45,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 2.4851314959245854,
+        "ordinary_component_gradient_norm": 2.5608905235743396,
+        "stop_to_ordinary_gradient_norm_ratio": 0.9704169206171241,
+        "stop_gradient_fraction_of_component_norms": 0.49249319291939225,
+        "gradient_cosine_similarity": -0.0008333811143456998,
+        "combined_gradient_norm": 3.5669919121628624,
+        "stop_component_loss": 0.83984375,
+        "ordinary_component_loss": 1.5234375
+      },
+      {
+        "example_index": 242,
+        "ordinary_tokens": 68,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 4.986028202721225,
+        "ordinary_component_gradient_norm": 2.7930554005872454,
+        "stop_to_ordinary_gradient_norm_ratio": 1.785151917027103,
+        "stop_gradient_fraction_of_component_norms": 0.640953158107293,
+        "gradient_cosine_similarity": -0.003864281021961285,
+        "combined_gradient_norm": 5.705611781285,
+        "stop_component_loss": 0.71484375,
+        "ordinary_component_loss": 2.78125
+      },
+      {
+        "example_index": 103,
+        "ordinary_tokens": 88,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.8140392196916967,
+        "ordinary_component_gradient_norm": 2.9678443145807396,
+        "stop_to_ordinary_gradient_norm_ratio": 0.2742863618864368,
+        "stop_gradient_fraction_of_component_norms": 0.2152470355881286,
+        "gradient_cosine_similarity": -0.5670887022585887,
+        "combined_gradient_norm": 2.594350260475869,
+        "stop_component_loss": 0.43359375,
+        "ordinary_component_loss": 2.359375
+      },
+      {
+        "example_index": 199,
+        "ordinary_tokens": 113,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.03696316927362677,
+        "ordinary_component_gradient_norm": 2.1468600756195575,
+        "stop_to_ordinary_gradient_norm_ratio": 0.0172173164396658,
+        "stop_gradient_fraction_of_component_norms": 0.016925897899504556,
+        "gradient_cosine_similarity": -0.05932634604075331,
+        "combined_gradient_norm": 2.144984569914755,
+        "stop_component_loss": 0.33203125,
+        "ordinary_component_loss": 0.99609375
+      },
+      {
+        "example_index": 8,
+        "ordinary_tokens": 136,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.21747145046246122,
+        "ordinary_component_gradient_norm": 1.5568904196871962,
+        "stop_to_ordinary_gradient_norm_ratio": 0.1396832093720216,
+        "stop_gradient_fraction_of_component_norms": 0.12256318968583264,
+        "gradient_cosine_similarity": -0.025329213822567222,
+        "combined_gradient_norm": 1.5665406856746307,
+        "stop_component_loss": 0.28125,
+        "ordinary_component_loss": 2.109375
+      },
+      {
+        "example_index": 154,
+        "ordinary_tokens": 160,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.0921961068037333,
+        "ordinary_component_gradient_norm": 1.9208812683218106,
+        "stop_to_ordinary_gradient_norm_ratio": 0.047996775398971424,
+        "stop_gradient_fraction_of_component_norms": 0.04579859072629216,
+        "gradient_cosine_similarity": 0.009901780530098804,
+        "combined_gradient_norm": 1.9240041932625107,
+        "stop_component_loss": 0.2392578125,
+        "ordinary_component_loss": 1.4765625
+      },
+      {
+        "example_index": 216,
+        "ordinary_tokens": 180,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.02537926713353971,
+        "ordinary_component_gradient_norm": 2.022470909487928,
+        "stop_to_ordinary_gradient_norm_ratio": 0.012548643846731778,
+        "stop_gradient_fraction_of_component_norms": 0.012393126910978563,
+        "gradient_cosine_similarity": -0.17022438136224666,
+        "combined_gradient_norm": 2.018305688055211,
+        "stop_component_loss": 0.2119140625,
+        "ordinary_component_loss": 1.96875
+      },
+      {
+        "example_index": 62,
+        "ordinary_tokens": 208,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.8296918994215545,
+        "ordinary_component_gradient_norm": 1.7651969151467262,
+        "stop_to_ordinary_gradient_norm_ratio": 0.4700279568257625,
+        "stop_gradient_fraction_of_component_norms": 0.319740828494647,
+        "gradient_cosine_similarity": -0.30750957038796084,
+        "combined_gradient_norm": 1.7039866406934285,
+        "stop_component_loss": 0.2021484375,
+        "ordinary_component_loss": 1.3046875
+      },
+      {
+        "example_index": 105,
+        "ordinary_tokens": 235,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.037497156781673334,
+        "ordinary_component_gradient_norm": 1.4043492290758666,
+        "stop_to_ordinary_gradient_norm_ratio": 0.02670073512010141,
+        "stop_gradient_fraction_of_component_norms": 0.026006346549443168,
+        "gradient_cosine_similarity": 0.04108232551069731,
+        "combined_gradient_norm": 1.406388819214576,
+        "stop_component_loss": 0.1650390625,
+        "ordinary_component_loss": 1.2265625
+      },
+      {
+        "example_index": 69,
+        "ordinary_tokens": 266,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.03172907785385023,
+        "ordinary_component_gradient_norm": 1.342980317172467,
+        "stop_to_ordinary_gradient_norm_ratio": 0.0236258696036984,
+        "stop_gradient_fraction_of_component_norms": 0.023080571041883956,
+        "gradient_cosine_similarity": 0.012503468769256698,
+        "combined_gradient_norm": 1.3437516327391827,
+        "stop_component_loss": 0.1455078125,
+        "ordinary_component_loss": 1.046875
+      },
+      {
+        "example_index": 204,
+        "ordinary_tokens": 293,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.06694941095654039,
+        "ordinary_component_gradient_norm": 1.1798661852793801,
+        "stop_to_ordinary_gradient_norm_ratio": 0.056743223758622646,
+        "stop_gradient_fraction_of_component_norms": 0.053696321379566966,
+        "gradient_cosine_similarity": -0.011185382217430123,
+        "combined_gradient_norm": 1.1810162327406344,
+        "stop_component_loss": 0.1328125,
+        "ordinary_component_loss": 0.88671875
+      },
+      {
+        "example_index": 74,
+        "ordinary_tokens": 336,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.05253541995454272,
+        "ordinary_component_gradient_norm": 1.4449852379706283,
+        "stop_to_ordinary_gradient_norm_ratio": 0.03635706343154392,
+        "stop_gradient_fraction_of_component_norms": 0.03508159949347947,
+        "gradient_cosine_similarity": -0.2005379178648101,
+        "combined_gradient_norm": 1.4353729396794168,
+        "stop_component_loss": 0.11572265625,
+        "ordinary_component_loss": 2.203125
+      },
+      {
+        "example_index": 243,
+        "ordinary_tokens": 366,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.3332261800834212,
+        "ordinary_component_gradient_norm": 1.3173081601547612,
+        "stop_to_ordinary_gradient_norm_ratio": 0.25295993007761586,
+        "stop_gradient_fraction_of_component_norms": 0.20188988011926767,
+        "gradient_cosine_similarity": -0.0009232773176109632,
+        "combined_gradient_norm": 1.358502819058009,
+        "stop_component_loss": 0.1103515625,
+        "ordinary_component_loss": 1.328125
+      },
+      {
+        "example_index": 12,
+        "ordinary_tokens": 456,
+        "stop_tokens": 1,
+        "stop_component_gradient_norm": 0.02091055373570854,
+        "ordinary_component_gradient_norm": 0.9261939303487031,
+        "stop_to_ordinary_gradient_norm_ratio": 0.022576863279417,
+        "stop_gradient_fraction_of_component_norms": 0.022078402211265287,
+        "gradient_cosine_similarity": -0.04178677493993626,
+        "combined_gradient_norm": 0.9255559733917651,
+        "stop_component_loss": 0.08544921875,
+        "ordinary_component_loss": 0.75
+      }
+    ]
+  },
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "peak_allocated_gb": 5.14,
+    "peak_reserved_gb": 5.355
+  },
+  "weights_updated": false
+}

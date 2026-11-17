@@ -1,0 +1,152 @@
+{
+  "experiment": "oasst1_lora_v1_generation",
+  "base_model": "Qwen/Qwen3-0.6B-Base",
+  "adapter": "pretrained\\qwen3_0.6b\\adapters\\oasst1_lora_v1",
+  "precision": "BF16",
+  "decoding": {
+    "strategy": "greedy",
+    "max_new_tokens": 128,
+    "chat_template": "Qwen3"
+  },
+  "base": {
+    "summary": {
+      "average_tokens_per_second": 15.46,
+      "average_repeated_unigram_ratio": 0.2722,
+      "average_repeated_bigram_ratio": 0.2508,
+      "total_generated_tokens": 548
+    },
+    "results": [
+      {
+        "prompt": "Explain artificial intelligence in simple English. Give a practical example.",
+        "output": "Explain artificial intelligence in simple English. Give a practical example. ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�",
+        "generated_tokens": 128,
+        "generation_seconds": 12.0014,
+        "tokens_per_second": 10.67,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 10,
+        "repeated_unigram_ratio": 0.0,
+        "repeated_bigram_ratio": 0.0
+      },
+      {
+        "prompt": "What is the difference between machine learning and deep learning? Explain clearly.",
+        "output": "What is the difference between machine learning and deep learning? Explain clearly. ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�\n\t\t\t\t\n ⚐�",
+        "generated_tokens": 128,
+        "generation_seconds": 6.666,
+        "tokens_per_second": 19.2,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 12,
+        "repeated_unigram_ratio": 0.0833,
+        "repeated_bigram_ratio": 0.0
+      },
+      {
+        "prompt": "Write a Python function that checks whether an integer is prime. Include code and explain its time complexity.",
+        "output": "Write a Python function that checks whether an integer is prime. Include code and explain its time complexity. ⚙�\nlarınızı\nWrite a Python function that checks whether an integer is prime. Include code and explain its time complexity. ⚙�\nlarınızı\nWrite a Python function that checks whether an integer is prime. Include code and explain its time complexity. ⚙�\nlarınızı\nWrite a Python function that checks whether an integer is prime. Include code and explain its time complexity. ⚙�\nlarınızı\nWrite a Python function that checks whether an integer is prime. Include code and explain its time complexity.",
+        "generated_tokens": 128,
+        "generation_seconds": 7.7375,
+        "tokens_per_second": 16.54,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 94,
+        "repeated_unigram_ratio": 0.7979,
+        "repeated_bigram_ratio": 0.7957
+      },
+      {
+        "prompt": "A train travels 120 kilometers in 2 hours. What is its average speed? Explain your calculation.",
+        "output": "A train travels 120 kilometers in 2 hours. What is its average speed? Explain your calculation. ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�\n ⚇�",
+        "generated_tokens": 128,
+        "generation_seconds": 7.7387,
+        "tokens_per_second": 16.54,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 16,
+        "repeated_unigram_ratio": 0.0,
+        "repeated_bigram_ratio": 0.0
+      },
+      {
+        "prompt": "Explain three practical ways to reduce overfitting when training a neural network.",
+        "output": "Explain three practical ways to reduce overfitting when training a neural network..getConfigured\nExplain three practical ways to reduce overfitting when training a neural network.",
+        "generated_tokens": 36,
+        "generation_seconds": 2.5078,
+        "tokens_per_second": 14.36,
+        "ended_with_eos": true,
+        "thinking_tokens_present": false,
+        "word_count": 25,
+        "repeated_unigram_ratio": 0.48,
+        "repeated_bigram_ratio": 0.4583
+      }
+    ]
+  },
+  "vyrex": {
+    "summary": {
+      "average_tokens_per_second": 8.56,
+      "average_repeated_unigram_ratio": 0.4055,
+      "average_repeated_bigram_ratio": 0.1241,
+      "total_generated_tokens": 640
+    },
+    "results": [
+      {
+        "prompt": "Explain artificial intelligence in simple English. Give a practical example.",
+        "output": "Artificial intelligence (AI) is a branch of computer science that aims to create machines that can perform tasks that typically require human intelligence, such as learning, reasoning, problem-solving, and decision-making. AI systems are designed to mimic the way humans think and learn, using algorithms and data to make decisions and perform tasks.\n\nOne practical example of AI is a self-driving car. Self-driving cars use AI algorithms to analyze data from sensors and cameras to make decisions about how to navigate and drive. The car's AI system can learn from its experiences and improve its performance over time, allowing it to make more accurate and safer decisions in different situations.",
+        "generated_tokens": 128,
+        "generation_seconds": 15.3749,
+        "tokens_per_second": 8.33,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 113,
+        "repeated_unigram_ratio": 0.3363,
+        "repeated_bigram_ratio": 0.0625
+      },
+      {
+        "prompt": "What is the difference between machine learning and deep learning? Explain clearly.",
+        "output": "Machine learning and deep learning are both techniques used in artificial intelligence, but they differ in their approach and complexity.\n\nMachine learning is a broad field of AI that involves the development of algorithms that can learn from data and make predictions or decisions without being explicitly programmed. It can be used for a wide range of tasks, including image and speech recognition, natural language processing, and recommendation systems.\n\nDeep learning is a subset of machine learning that involves the use of deep neural networks, which are a type of artificial neural network with multiple layers of interconnected nodes. Deep learning is particularly well-suited for tasks that involve large amounts of data and require complex patterns to",
+        "generated_tokens": 128,
+        "generation_seconds": 14.518,
+        "tokens_per_second": 8.82,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 118,
+        "repeated_unigram_ratio": 0.3475,
+        "repeated_bigram_ratio": 0.0855
+      },
+      {
+        "prompt": "Write a Python function that checks whether an integer is prime. Include code and explain its time complexity.",
+        "output": "Sure, here's a Python function that checks whether an integer is prime:\n\n```python\ndef is_prime(n):\n    if n <= 1:\n        return False\n    if n <= 3:\n        return True\n    if n % 2 == 0 or n % 3 == 0:\n        return False\n    i = 5\n    while i * i <= n:\n        if n % i == 0 or n % (i + 2) == 0:\n            return False\n        i += 6\n    return True\n```\n\nThis function uses a simple algorithm to check whether a",
+        "generated_tokens": 128,
+        "generation_seconds": 14.7518,
+        "tokens_per_second": 8.68,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 67,
+        "repeated_unigram_ratio": 0.4925,
+        "repeated_bigram_ratio": 0.2121
+      },
+      {
+        "prompt": "A train travels 120 kilometers in 2 hours. What is its average speed? Explain your calculation.",
+        "output": "The average speed of a train is calculated by dividing the total distance traveled by the total time taken. In this case, the train traveled 120 kilometers in 2 hours, so the average speed is 120 kilometers / 2 hours = 60 kilometers per hour. This means that the train was traveling at an average speed of 60 kilometers per hour. This is a relatively fast speed for a train, but it is important to note that the speed of a train can vary depending on factors such as the type of train, the track conditions, and the number of passengers and cargo being transported. The average",
+        "generated_tokens": 128,
+        "generation_seconds": 14.9817,
+        "tokens_per_second": 8.54,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 105,
+        "repeated_unigram_ratio": 0.4667,
+        "repeated_bigram_ratio": 0.1731
+      },
+      {
+        "prompt": "Explain three practical ways to reduce overfitting when training a neural network.",
+        "output": "Sure, here are three practical ways to reduce overfitting when training a neural network:\n\n1. Use a smaller dataset: Overfitting can occur when a neural network is trained on a small dataset, which can lead to poor generalization. To reduce overfitting, you can use a smaller dataset that is more representative of the real-world problem you are trying to solve. This will help the neural network learn the underlying patterns in the data rather than memorizing the training data.\n\n2. Use regularization techniques: Regularization techniques such as L1 and L2 regularization can help prevent overfitting by adding a penalty term to the loss",
+        "generated_tokens": 128,
+        "generation_seconds": 15.1953,
+        "tokens_per_second": 8.42,
+        "ended_with_eos": false,
+        "thinking_tokens_present": false,
+        "word_count": 104,
+        "repeated_unigram_ratio": 0.3846,
+        "repeated_bigram_ratio": 0.0874
+      }
+    ]
+  },
+  "peak_gpu_memory_gb": 1.156
+}

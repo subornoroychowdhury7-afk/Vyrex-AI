@@ -1,0 +1,27 @@
+{
+  "library": {
+    "name": "tokenizers",
+    "version": "0.23.3"
+  },
+  "schema_version": 1,
+  "tokenizer": {
+    "actual_vocab_size": 16000,
+    "algorithm": "byte-level BPE",
+    "min_frequency": 2,
+    "name": "vyrex-bpe-en-v1",
+    "requested_vocab_size": 16000,
+    "special_tokens": {
+      "<|bos|>": 1,
+      "<|eos|>": 2,
+      "<|pad|>": 0
+    }
+  },
+  "training_corpus": {
+    "character_count": 93355506,
+    "dataset_name": "oanc_production_v1",
+    "document_count": 8646,
+    "file_size_bytes": 96672157,
+    "sha256": "aae18adc42789926f7280d09a5d5a45811b50a51cca34634b7a89cbf91fda2cf",
+    "text_bytes": 93508621
+  }
+}

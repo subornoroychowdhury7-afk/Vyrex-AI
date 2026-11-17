@@ -1,145 +1,307 @@
-# VYREX AI — Phase 1 Project Foundation
+# VYREX AI
 
-**Project intent:** build an English-language, hybrid (general knowledge + education + coding) decoder-only Transformer LLM, starting from randomly initialized weights. This repository is a foundation, not a pretrained model or working chatbot yet.
+> **A smart conversational AI assistant — built and trained by Suborno Roy Chowdhury.**
 
-## Phase 1 status
+VYREX AI is an AI chatbot that you can run completely on your own computer. It can hold conversations, answer questions, and respond naturally — just like talking to a knowledgeable assistant. No internet connection required, no cloud service, no subscription. It runs fully on your local machine.
 
-Implemented:
-- Cloud-provider-neutral Python project layout.
-- Typed configuration loading and validation.
-- Runtime diagnostics for Python, PyTorch, CUDA, and visible NVIDIA GPUs.
-- Console/file logging.
-- CLI commands for diagnostics, configuration validation, and directory initialization.
-- Unit tests for configuration validation.
+---
 
-Not implemented yet: tokenizer training, Transformer layers, dataset ingestion, pretraining, instruction tuning, inference, or a chat UI. Those are later phases.
+## Table of Contents
 
-## Architecture plan
+- [What is VYREX AI? (In plain English)](#what-is-vyrex-ai-in-plain-english)
+- [What Can It Do?](#what-can-it-do)
+- [How Was It Built?](#how-was-it-built)
+- [Trained Model Specifications](#trained-model-specifications)
+- [What's Inside the Project?](#whats-inside-the-project)
+- [What You Need to Run It](#what-you-need-to-run-it)
+- [How to Install It](#how-to-install-it)
+- [How to Use It (Single Prompt)](#how-to-use-it-single-prompt)
+- [How to Have a Conversation With It (Interactive Chat)](#how-to-have-a-conversation-with-it-interactive-chat)
+- [How the Training Was Done](#how-the-training-was-done)
+- [About the Creator](#about-the-creator)
 
-```text
-Public / licensed / owned English text sources
-                    |
-          Data inventory & license audit
-                    |
-       Clean -> deduplicate -> quality filter
-                    |
-         Train / validation / test splits
-                    |
-        Custom English BPE tokenizer (Phase 2)
-                    |
-       Token IDs + packed training sequences
-                    |
-     Decoder-only Transformer (Phase 3)
-       RoPE + RMSNorm + causal attention
-                + SwiGLU MLP
-                    |
-       Next-token pretraining (Phase 4)
-                    |
-        Instruction / chat fine-tuning
-                    |
-       Evaluation, safety and regression tests
-                    |
-        Local inference API + chat UI
+---
+
+## What is VYREX AI? (In Plain English)
+
+Think of VYREX AI like a very smart assistant living inside your computer. You type something to it, and it types back a helpful, thoughtful reply — just like texting with a knowledgeable friend.
+
+Unlike a simple bot that just matches your words to canned answers, VYREX AI actually *understands* language. It was trained on thousands of real human conversations, so it knows how to reply naturally to almost anything you ask.
+
+**Here's the simplest way to understand how it was made:**
+
+Imagine you have a very smart student (the base AI model called **Qwen3-1.7B**, created by Alibaba). This student already knows a lot about the world — grammar, facts, science, and coding. But it hasn't been taught *how to have a conversation* yet.
+
+What we did is take that smart student and **train it specifically on curated human dialogue** — teaching it how to respond helpfully, politely, and concisely when someone asks it something. This process of focused extra training is called **fine-tuning**.
+
+The result is VYREX AI — an independent conversational assistant running locally on your hardware.
+
+---
+
+## What Can It Do?
+
+### 💬 Hold a Real Back-and-Forth Conversation
+VYREX AI remembers what you said earlier in the conversation — up to the last **8 exchanges** (16 conversation turns). So you don't have to repeat yourself every time.
+
+### ✋ Know When to Stop Talking
+One of the common issues with open-source AI is that models can ramble or generate repetitive filler text after finishing their answer. VYREX AI includes a custom **calibrated natural termination system** (`CalibratedStopLogitsProcessor`) that boosts the end-of-turn token at sentence and paragraph boundaries (`.`, `!`, `?`, `\n`, code blocks). It finishes its thought and stops cleanly.
+
+### 🏃 Run Fast on Consumer GPUs
+Running a full 1.7-billion-parameter model normally demands heavy workstation hardware. VYREX AI runs in **NF4 (Normal Float 4-bit)** quantization with double quantization and **BF16 compute**. This fits the model comfortably in around **4–6 GB of VRAM**, allowing it to run smoothly on mainstream gaming graphics cards.
+
+### 🎲 Two Conversation Modes
+- **Focused mode (default):** Gives direct, deterministic, and precise answers — ideal for technical and factual inquiries.
+- **Creative mode (`--sample`):** Generates varied and expressive answers (`temperature=0.7`, `top_p=0.9`) — great for brainstorming, writing, or casual dialogue.
+
+### 🤝 Identity and Creator Grounding
+VYREX AI understands its identity and background. When asked *"Who are you?"*, *"Who created you?"*, or *"Who is Suborno Roy Chowdhury?"*, it responds accurately and proudly with verified details about its creator and project provenance.
+
+---
+
+## How Was It Built?
+
+### Step 1 — Start With a Strong Base Model
+We started with **Qwen3-1.7B-Base**. The "1.7B" means it possesses **1.7 billion parameters** (the internal computational weights that encode knowledge and grammar).
+
+### Step 2 — Curate High-Quality Dialogue Data
+We used the **OASST1** (OpenAssistant Conversations) dataset and augmented it with custom alignment and identity examples using `build_vyrex_v3_dataset.py`. This trained the model to follow instructions, respect negative constraints, track multi-turn entities, and terminate promptly.
+
+### Step 3 — Parameter-Efficient Fine-Tuning (QLoRA)
+Rather than retraining all 1.7 billion parameters (which is computationally prohibitive), we used **QLoRA** (Quantized Low-Rank Adaptation):
+- The base model weights are frozen in 4-bit precision.
+- Small trainable adapter matrices (**Rank 16, Alpha 32**) are attached across all key attention and feed-forward layers (`q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj`).
+- Only ~0.8% of the model parameters are updated during training, saving memory and preventing catastrophic forgetting.
+
+### Step 4 — 5× Weighted Stop Token Loss
+During training, the end-of-turn token (`<|im_end|>`, ID `151645`) was assigned **5 times the loss weight** of ordinary tokens. This heavily penalizes the model if it fails to emit the stop signal at the end of a response.
+
+---
+
+## Trained Model Specifications
+
+| Property | Value | Verified From |
+|---|---|---|
+| **Base Model** | `Qwen/Qwen3-1.7B` | `pretrained/qwen3_1.7b/original` |
+| **Active LoRA Checkpoint** | `vyrex_1_7b_qlora_v3 / best_checkpoint` | `adapter_config.json` |
+| **LoRA Rank ($r$)** | `16` | `adapter_config.json` |
+| **LoRA Alpha ($\alpha$)** | `32` | `adapter_config.json` |
+| **LoRA Dropout** | `0.05` | `adapter_config.json` |
+| **Target Modules** | `q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj` | `adapter_config.json` |
+| **Quantization** | NF4 4-bit with double quantization | `vyrex_1_7b_inference.py` |
+| **Compute Precision** | BF16 (`bfloat16`) | `vyrex_1_7b_inference.py` |
+| **Training Dataset** | OASST1 + VYREX V3 alignment (`vyrex_v3_sft`) | `training_history.json` |
+| **Training Steps** | 806 steps (2 full epochs) | `training_history.json` |
+| **Validation Loss** | Dropped from `1.5718` down to `1.3671` | `training_history.json` |
+| **Stop Token ID** | `151645` (`<|im_end|>`) | `vyrex_1_7b_inference.py` |
+| **Boundary Stop Bias** | `+4.8` | `vyrex_1_7b_inference.py` |
+
+---
+
+## What's Inside the Project?
+
+```
+vyrex-ai-phase1/
+│
+├── scripts/pretrained/
+│   ├── vyrex_1_7b_chat.py              ← Interactive multi-turn chat CLI
+│   ├── vyrex_1_7b_inference.py         ← Single-prompt inference engine
+│   ├── train_vyrex_qwen3_1_7b_qlora_v3.py ← Active V3 QLoRA training script
+│   ├── build_vyrex_v3_dataset.py       ← Prepares SFT conversation arrays
+│   └── benchmark_vyrex_v3.py           ← Generation quality evaluation
+│
+├── pretrained/
+│   ├── qwen3_1.7b/
+│   │   ├── original/                   ← Qwen3-1.7B base model weights (3.22 GB)
+│   │   ├── adapters/
+│   │   │   └── vyrex_1_7b_qlora_v3/
+│   │   │       └── best_checkpoint/    ← Active trained VYREX AI adapter (77.45 MB)
+│   │   └── runs/                       ← Training logs & validation history
+│   │
+│   └── qwen3_0.6b/
+│       └── data/
+│           └── vyrex_v3_sft/           ← Prepared training NumPy arrays
+│
+├── pyproject.toml                      ← Package definition & build configuration
+└── README.md                           ← Project documentation
 ```
 
-### Initial model design (a starting experiment, not a permanent commitment)
+---
 
-| Setting | Initial value |
-|---|---:|
-| Architecture | Decoder-only Transformer |
-| Vocabulary | 16,000 BPE tokens |
-| Hidden width | 384 |
-| Transformer blocks | 6 |
-| Attention heads | 6 |
-| SwiGLU intermediate width | 1,024 |
-| Context length | 1,024 tokens |
-| Position handling | RoPE |
-| Normalization | RMSNorm |
-| Embeddings | Tied token embedding / output head |
-| Dropout | 0.10 |
+## What You Need to Run It
 
-With tied embeddings and the planned block dimensions, the parameter count is approximately 17 million. Exact count will be reported by the implemented model in Phase 3.
+| Requirement | Details |
+|---|---|
+| **Operating System** | Windows 10/11 or Linux |
+| **Python** | 3.10, 3.11, or 3.12 |
+| **GPU** | NVIDIA GPU supporting BF16 (RTX 30xx, RTX 40xx, A100, etc.) |
+| **CUDA** | CUDA 11.8, 12.1, or 12.4+ |
+| **VRAM** | ~4–6 GB for inference; ~8–12 GB for fine-tuning |
 
-### Hybrid training objective
+> [!NOTE]
+> Check your GPU in Windows: Press `Ctrl + Shift + Esc` (Task Manager) → **Performance** tab → **GPU**. Verify that you have an NVIDIA GPU with at least 6 GB of dedicated GPU memory.
 
-The initial proposed *source mixture* is 60% general text, 25% educational content, and 15% code/programming material. These are hypotheses for the first controlled experiment, not fixed requirements. We will adjust them only after measuring source quality, token counts, licensing, duplicates, and validation performance by domain.
+---
 
-Pretraining teaches language patterns and broad representations. A separate instruction-tuning stage teaches the model to answer questions, explain concepts, and assist with coding. A small Q&A dataset alone is not enough to pretrain a general language model.
+## How to Install It
 
-## Cloud training strategy
+### Step 1 — Clone the Repository
 
-The code is provider-neutral and expects a Linux environment with Python and a compatible accelerator runtime. The first runs should be small experiments on a rented NVIDIA GPU; the same repository can be used in a Colab notebook for setup checks. Keep datasets and checkpoints on persistent object storage or a mounted persistent volume, not only on an ephemeral VM disk.
+```bash
+git clone <your-repo-url>
+cd vyrex-ai-phase1
+```
 
-Do not pick a CUDA wheel by guesswork. Install PyTorch using the official selector for the VM's OS, Python, and CUDA/ROCm environment: <https://pytorch.org/get-started/locally/>. PyTorch's install page recommends selecting the compute platform matching the hardware and verifying with `torch.cuda.is_available()`.
+### Step 2 — Activate the Python Virtual Environment
 
-## Quick start
+If using the included virtual environment:
 
-### 1. Create an environment
+```bash
+# Windows (PowerShell):
+.\.venv\Scripts\Activate.ps1
 
+# Windows (Command Prompt):
+.\.venv\Scripts\activate.bat
+
+# Linux / macOS:
+source .venv/bin/activate
+```
+
+Or create a fresh one:
 ```bash
 python -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
+.\.venv\Scripts\Activate.ps1
 ```
 
-On Windows PowerShell, activate with `.venv\\Scripts\\Activate.ps1`.
-
-### 2. Install the correct PyTorch build
-
-Use the official PyTorch install selector: <https://pytorch.org/get-started/locally/>. Select the VM's OS, Pip, Python, and the CUDA version supported by the installed NVIDIA driver. For a CPU-only configuration check, select CPU.
-
-### 3. Install VYREX AI and development tools
+### Step 3 — Install Required Libraries
 
 ```bash
-pip install -e ".[dev]"
+# 1. Install PyTorch with CUDA support (if not already installed)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# 2. Install LLM fine-tuning & inference libraries
+pip install transformers peft bitsandbytes accelerate numpy
 ```
 
-### 4. Run Phase 1 checks
+> [!TIP]
+> On Windows, ensure you install the Windows-compatible `bitsandbytes` package:
+> ```bash
+> pip install bitsandbytes --upgrade
+> ```
+
+### Step 4 — Verify Model Files
+
+Ensure the base model and adapter are in place:
+1. Base weights: `pretrained/qwen3_1.7b/original/`
+2. Trained adapter: `pretrained/qwen3_1.7b/adapters/vyrex_1_7b_qlora_v3/best_checkpoint/`
+
+*(If re-downloading the base model: `huggingface-cli download Qwen/Qwen3-1.7B --local-dir pretrained/qwen3_1.7b/original`)*
+
+---
+
+## How to Use It (Single Prompt)
+
+To query VYREX AI with a single prompt:
 
 ```bash
-vyrex doctor
-vyrex show-config --config configs/base.yaml
-vyrex init --config configs/base.yaml
-pytest -q
+cd scripts/pretrained
+
+# Basic query (greedy decoding)
+python vyrex_1_7b_inference.py --prompt "What is machine learning?"
+
+# Creative query with sampling
+python vyrex_1_7b_inference.py --prompt "Write a short poem about the night sky." --sample --max-new-tokens 256
 ```
 
-Equivalent CLI without installation: `python -m vyrex_ai.cli doctor` from the repository after setting `PYTHONPATH=src`.
+### Inference Command-Line Options
 
-## Repository layout
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `--prompt` | string | `"Say hello in one clear sentence."` | Input text prompt |
+| `--max-new-tokens` | integer | `192` | Maximum generated output tokens |
+| `--sample` | flag | `False` | Enables sampling (`temperature=0.7`, `top_p=0.9`) |
+| `--bias` | float | `4.8` | Strength of calibrated boundary stop-token bias |
 
-```text
-vyrex-ai/
-├── configs/              # Versioned experiment configurations
-├── data/                 # Dataset staging; contents excluded from Git
-│   ├── raw/
-│   ├── processed/
-│   └── splits/
-├── checkpoints/          # Model checkpoints; contents excluded from Git
-├── artifacts/            # Tokenizer and exported model artifacts
-├── docs/                 # Architecture, data governance, roadmap
-├── logs/                 # Local logs; contents excluded from Git
-├── scripts/              # Reproducible operational scripts
-├── src/vyrex_ai/         # Installable Python package
-└── tests/                # Automated tests
+---
+
+## How to Have a Conversation With It (Interactive Chat)
+
+To start a full interactive conversation with conversation memory:
+
+```bash
+cd scripts/pretrained
+
+python vyrex_1_7b_chat.py
 ```
 
-## Engineering rules
+### Interactive Session Controls
 
-1. Never describe a random-weight checkpoint as a pretrained or capable assistant model.
-2. Every experiment records config, seed, code revision, data manifest, tokenizer version, and hardware details.
-3. Keep a held-out test set untouched until final evaluation; do not train on it.
-4. Track training and validation loss separately, plus per-domain metrics for general, education, and code.
-5. Use only data with a documented lawful basis and compatible license; remove secrets and personal data where possible.
-6. Do not commit raw datasets, model checkpoints, credentials, or personal access tokens to Git.
-7. Checkpoint atomically and test restoration before long runs.
-8. Do not scale model size until a small run is stable and the compute budget is understood.
+| Command | Action |
+|---|---|
+| `/reset` | Clears conversation history and starts a fresh turn |
+| `/exit` | Gracefully closes the session |
 
-## Phase gates
+### Chat Command-Line Options
 
-- **Phase 1 (current):** project foundation and runtime checks.
-- **Phase 2:** custom BPE tokenizer, tokenizer tests, and data manifest format.
-- **Phase 3:** model implementation, parameter-count report, shape tests, causal-mask tests, and a tiny overfit test.
-- **Phase 4:** pretraining data pipeline, checkpoints, resume, validation, and experiment logging.
-- **Phase 5:** instruction data formatting and supervised fine-tuning.
-- **Phase 6:** benchmark and human-review evaluation, safety, and regression suite.
-- **Phase 7:** inference interface and deployment.
+```bash
+# Launch with sampling and longer answers:
+python vyrex_1_7b_chat.py --sample --max-new-tokens 384
+```
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `--max-new-tokens` | integer | `256` | Maximum new tokens per assistant turn |
+| `--sample` | flag | `False` | Enables sampling for creative responses |
+| `--bias` | float | `4.8` | Strength of calibrated boundary stop-token bias |
+| `--system` | string | Built-in VYREX prompt | Override system personality prompt |
+
+---
+
+## How the Training Was Done
+
+If you wish to retrain or fine-tune further:
+
+### 1. Build the Alignment Dataset
+
+```bash
+cd scripts/pretrained
+python build_vyrex_v3_dataset.py
+```
+*Outputs tokenized arrays to `pretrained/qwen3_0.6b/data/vyrex_v3_sft/`.*
+
+### 2. Run the QLoRA Trainer
+
+```bash
+# Smoke test (single gradient step verification — no files modified)
+python train_vyrex_qwen3_1_7b_qlora_v3.py --smoke-test
+
+# Full 2-epoch training
+python train_vyrex_qwen3_1_7b_qlora_v3.py --epochs 2 --run-name vyrex_1_7b_qlora_v3
+```
+
+### Training Command-Line Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `--run-name` | string | `vyrex_1_7b_qlora_v3` | Run folder identifier |
+| `--epochs` | integer | `2` | Training passes over dataset |
+| `--max-steps` | integer | `0` (unlimited) | Step limit for quick testing |
+| `--smoke-test` | flag | `False` | Runs 1 step without saving checkpoints |
+
+---
+
+## About the Creator
+
+**VYREX AI** was created, architected, and developed by **Suborno Roy Chowdhury** — an AI/ML Engineer and Researcher based in Kolkata, India.
+
+- 🎓 Pursuing B.Tech in Artificial Intelligence & Machine Learning at St. Thomas' College of Engineering & Technology, Kolkata (YGPA: 8.71)
+- 📜 Enrolled in the Certificate Programme in AI for Real-World Applications at **IIT Kharagpur**
+- 🔧 Core expertise: Python, TypeScript, FastAPI, Next.js, ChromaDB, Scikit-Learn, PyTorch, and LLM Fine-tuning (LoRA / QLoRA)
+- 🚀 Notable projects:
+  - **VYREX AI** — Independent conversational model fine-tuned on Qwen3-1.7B with calibrated natural termination.
+  - **DocQ&A** — Full-stack Enterprise RAG platform utilizing OCR, ChromaDB, FastAPI, and Next.js.
+
+---
+
+## License
+
+Licensed under the [Apache License, Version 2.0](LICENSE).

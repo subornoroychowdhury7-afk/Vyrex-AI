@@ -1,0 +1,266 @@
+[
+  {
+    "example_index": 242,
+    "stop_probability": 2.808199860737659e-05,
+    "stop_rank": 909,
+    "final_token": {
+      "id": 13,
+      "text": "'.'"
+    },
+    "final_token_probability": 1.2876244070980647e-08,
+    "final_token_rank": 84107,
+    "stop_to_final_probability_ratio": 2180.915370396352,
+    "top5_competitors": [
+      {
+        "id": 1260,
+        "text": "' He'",
+        "probability": 0.3524375855922699,
+        "logit": 15.4375
+      },
+      {
+        "id": 576,
+        "text": "' The'",
+        "probability": 0.10097505897283554,
+        "logit": 14.1875
+      },
+      {
+        "id": 2379,
+        "text": "' They'",
+        "probability": 0.05077344924211502,
+        "logit": 13.5
+      },
+      {
+        "id": 1084,
+        "text": "' It'",
+        "probability": 0.03714664652943611,
+        "logit": 13.1875
+      },
+      {
+        "id": 1634,
+        "text": "' As'",
+        "probability": 0.02553049474954605,
+        "logit": 12.8125
+      }
+    ]
+  },
+  {
+    "example_index": 47,
+    "stop_probability": 0.00022897165035828948,
+    "stop_rank": 184,
+    "final_token": {
+      "id": 13,
+      "text": "'.'"
+    },
+    "final_token_probability": 9.069646580428525e-07,
+    "final_token_rank": 14722,
+    "stop_to_final_probability_ratio": 252.45928639864482,
+    "top5_competitors": [
+      {
+        "id": 1096,
+        "text": "' This'",
+        "probability": 0.06348749250173569,
+        "logit": 11.875
+      },
+      {
+        "id": 576,
+        "text": "' The'",
+        "probability": 0.05964098125696182,
+        "logit": 11.8125
+      },
+      {
+        "id": 758,
+        "text": "' In'",
+        "probability": 0.01605215109884739,
+        "logit": 10.5
+      },
+      {
+        "id": 11954,
+        "text": "' During'",
+        "probability": 0.013307701796293259,
+        "logit": 10.3125
+      },
+      {
+        "id": 4354,
+        "text": "' However'",
+        "probability": 0.013307701796293259,
+        "logit": 10.3125
+      }
+    ]
+  },
+  {
+    "example_index": 62,
+    "stop_probability": 0.00018126492796000093,
+    "stop_rank": 131,
+    "final_token": {
+      "id": 9675,
+      "text": "' businesses'"
+    },
+    "final_token_probability": 8.660692856210517e-07,
+    "final_token_rank": 12521,
+    "stop_to_final_probability_ratio": 209.29610479145123,
+    "top5_competitors": [
+      {
+        "id": 198,
+        "text": "'\\n'",
+        "probability": 0.33813807368278503,
+        "logit": 13.5
+      },
+      {
+        "id": 11,
+        "text": "','",
+        "probability": 0.031451739370822906,
+        "logit": 11.125
+      },
+      {
+        "id": 476,
+        "text": "' or'",
+        "probability": 0.020306769758462906,
+        "logit": 10.6875
+      },
+      {
+        "id": 13,
+        "text": "'.'",
+        "probability": 0.011570448987185955,
+        "logit": 10.125
+      },
+      {
+        "id": 118076,
+        "text": "'\u53d6\u5f97\u4ee5\u53ca'",
+        "probability": 0.010210885666310787,
+        "logit": 10.0
+      }
+    ]
+  },
+  {
+    "example_index": 103,
+    "stop_probability": 0.000317270023515448,
+    "stop_rank": 71,
+    "final_token": {
+      "id": 13,
+      "text": "'.'"
+    },
+    "final_token_probability": 2.36627215599583e-06,
+    "final_token_rank": 5557,
+    "stop_to_final_probability_ratio": 134.08010685141457,
+    "top5_competitors": [
+      {
+        "id": 220,
+        "text": "' '",
+        "probability": 0.13625089824199677,
+        "logit": 12.875
+      },
+      {
+        "id": 4710,
+        "text": "' \\n\\n'",
+        "probability": 0.0034109745174646378,
+        "logit": 9.1875
+      },
+      {
+        "id": 62116,
+        "text": "'\\tiVar'",
+        "probability": 0.002344326116144657,
+        "logit": 8.8125
+      },
+      {
+        "id": 4354,
+        "text": "' However'",
+        "probability": 0.001943514565937221,
+        "logit": 8.625
+      },
+      {
+        "id": 18611,
+        "text": "'  \\n\\n'",
+        "probability": 0.0011788011761382222,
+        "logit": 8.125
+      }
+    ]
+  },
+  {
+    "example_index": 165,
+    "stop_probability": 0.00038511541788466275,
+    "stop_rank": 48,
+    "final_token": {
+      "id": 30,
+      "text": "'?'"
+    },
+    "final_token_probability": 1.0278438544730761e-08,
+    "final_token_rank": 40036,
+    "stop_to_final_probability_ratio": 37468.28044052392,
+    "top5_competitors": [
+      {
+        "id": 6771,
+        "text": "' Let'",
+        "probability": 0.0008954201475717127,
+        "logit": 8.0
+      },
+      {
+        "id": 116411,
+        "text": "'\u683c\u7db2\u7ad9'",
+        "probability": 0.0008678709273226559,
+        "logit": 7.96875
+      },
+      {
+        "id": 117975,
+        "text": "'\u5177\u6709\u6218\u58eb'",
+        "probability": 0.0008411693852394819,
+        "logit": 7.9375
+      },
+      {
+        "id": 89998,
+        "text": "'(Initialized'",
+        "probability": 0.0007658934337086976,
+        "logit": 7.84375
+      },
+      {
+        "id": 117971,
+        "text": "'\u529b\u8fd8\u662f\u81ea'",
+        "probability": 0.0006349479081109166,
+        "logit": 7.65625
+      }
+    ]
+  },
+  {
+    "example_index": 216,
+    "stop_probability": 0.0003854761307593435,
+    "stop_rank": 46,
+    "final_token": {
+      "id": 13,
+      "text": "'.'"
+    },
+    "final_token_probability": 3.241413821797323e-07,
+    "final_token_rank": 12004,
+    "stop_to_final_probability_ratio": 1189.222209664059,
+    "top5_competitors": [
+      {
+        "id": 358,
+        "text": "' I'",
+        "probability": 0.001345443888567388,
+        "logit": 8.5625
+      },
+      {
+        "id": 6771,
+        "text": "' Let'",
+        "probability": 0.0008686838555149734,
+        "logit": 8.125
+      },
+      {
+        "id": 116411,
+        "text": "'\u683c\u7db2\u7ad9'",
+        "probability": 0.0008160529541783035,
+        "logit": 8.0625
+      },
+      {
+        "id": 138626,
+        "text": "' \u043c\u043e\u0431\u0438\u043b\u044c\u043d'",
+        "probability": 0.0006557169836014509,
+        "logit": 7.84375
+      },
+      {
+        "id": 96835,
+        "text": "' sextreffen'",
+        "probability": 0.0006355427321977913,
+        "logit": 7.8125
+      }
+    ]
+  }
+]

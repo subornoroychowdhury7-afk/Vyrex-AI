@@ -1,33 +1,65 @@
+﻿# Virtual Environments
+.venv/
+venv/
+**/.venv/
+**/venv/
+env/
+
+# Python bytecode and caches
 __pycache__/
 *.py[cod]
 *.egg-info/
-.venv/
-venv/
-.env
 .pytest_cache/
 .ruff_cache/
 .ipynb_checkpoints/
-.DS_Store
-*.log
-logs/*
-!logs/.gitkeep
+
+# Pretrained Base Model Weights (Multi-GB files downloaded from HuggingFace)
+pretrained/**/original/
+pretrained/**/original/*
+*model*.safetensors
+!*adapter*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Large binary dataset arrays
+*.npy
+*.npz
+pretrained/**/data/
+
+# Raw and Processed Datasets
 data/raw/*
-data/processed/*
-data/splits/*
 !data/raw/README.md
+data/processed/*
 !data/processed/README.md
+data/splits/*
 !data/splits/README.md
+data/smoke/
+
+# Model Checkpoints & Training Outputs
 checkpoints/*
 !checkpoints/README.md
-artifacts/
 outputs/
 wandb/
 mlruns/
 
-# Generated audit reports; preserve locally unless explicitly approved.
-reports/*
-!reports/README.md
+# Audit reports
+reports/
 
-# Local synthetic smoke-test data and generated tokenizer artifacts.
-data/smoke/
+# Logs and environment secrets
+*.log
+logs/
+.env
+.DS_Store
+Thumbs.db
+
+# Old intermediate training runs
+pretrained/**/adapters/vyrex_1_7b_qlora_v1/
+pretrained/**/adapters/vyrex_1_7b_qlora_full_v1/
+pretrained/**/adapters/vyrex_1_7b_qlora_v2*/
+pretrained/**/adapters/vyrex_1_7b_qlora_v3/epoch_*/
+
+# Temporary directories
+.tmp/
+*.tmp
 tokenizers/

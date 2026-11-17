@@ -1,0 +1,47 @@
+{
+  "experiment": "vyrex_qwen3_1.7b_qlora_test_comparison",
+  "dataset": "OASST1 Qwen3 SFT v1",
+  "split": "test",
+  "examples": 312,
+  "sequence_length": 512,
+  "supervised_tokens": 64196,
+  "base_model": "Qwen/Qwen3-1.7B-Base",
+  "quantization": "NF4 4-bit double quantization",
+  "compute_dtype": "BF16",
+  "gpu": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "results": {
+    "base_nf4": {
+      "loss": 1.5085682811099344,
+      "perplexity": 4.5202544256017845,
+      "supervised_tokens": 64196,
+      "examples": 312,
+      "seconds": 81.71,
+      "tokens_per_second": 785.62,
+      "peak_gpu_allocated_gb": 1.992,
+      "peak_gpu_reserved_gb": 2.072,
+      "improvement_vs_base_percent": 0.0
+    },
+    "pilot_100_steps": {
+      "loss": 1.3503904530359667,
+      "perplexity": 3.8589319682838767,
+      "supervised_tokens": 64196,
+      "examples": 312,
+      "seconds": 95.85,
+      "tokens_per_second": 669.73,
+      "peak_gpu_allocated_gb": 2.025,
+      "peak_gpu_reserved_gb": 2.131,
+      "improvement_vs_base_percent": 10.485294570663235
+    },
+    "full_epoch_384_steps": {
+      "loss": 1.320413047876874,
+      "perplexity": 3.7449679088868,
+      "supervised_tokens": 64196,
+      "examples": 312,
+      "seconds": 95.14,
+      "tokens_per_second": 674.75,
+      "peak_gpu_allocated_gb": 2.025,
+      "peak_gpu_reserved_gb": 2.131,
+      "improvement_vs_base_percent": 12.472437316170032
+    }
+  }
+}

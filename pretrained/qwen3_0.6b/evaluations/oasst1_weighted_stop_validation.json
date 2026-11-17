@@ -1,0 +1,254 @@
+{
+  "dataset": "OASST1 Qwen3 SFT v1",
+  "test_examples": 338,
+  "stop_token_id": 151645,
+  "eos_token_id": 151643,
+  "newline_token_id": 198,
+  "batch_size": 2,
+  "base": {
+    "overall": {
+      "examples": 338,
+      "stop_probability_mean": 2.114564051663202e-06,
+      "stop_probability_median": 1.7023791404335853e-10,
+      "stop_rank_mean": 86842.29881656804,
+      "stop_rank_median": 107437.5,
+      "eos_probability_mean": 0.42264224637473,
+      "newline_probability_mean": 0.014841843837342706,
+      "final_token_probability_mean": 0.3999667207660696,
+      "final_token_rank_mean": 5.399408284023669,
+      "final_token_top1_accuracy": 0.5769230769230769,
+      "stop_top1_accuracy": 0.0
+    },
+    "length_buckets": {
+      "1-64": {
+        "examples": 66,
+        "stop_probability_mean": 4.569732796317732e-06,
+        "stop_probability_median": 3.273130877445851e-09,
+        "stop_rank_mean": 68829.04545454546,
+        "stop_rank_median": 77767.5,
+        "eos_probability_mean": 0.19685398026787437,
+        "newline_probability_mean": 0.013635658180312545,
+        "final_token_probability_mean": 0.4222543841253569,
+        "final_token_rank_mean": 18.5,
+        "final_token_top1_accuracy": 0.5909090909090909,
+        "stop_top1_accuracy": 0.0
+      },
+      "65-128": {
+        "examples": 60,
+        "stop_probability_mean": 2.7734637602090833e-06,
+        "stop_probability_median": 7.657727674192927e-09,
+        "stop_rank_mean": 69632.53333333334,
+        "stop_rank_median": 87164.5,
+        "eos_probability_mean": 0.24362388940838475,
+        "newline_probability_mean": 0.02781137948373574,
+        "final_token_probability_mean": 0.3749123101743559,
+        "final_token_rank_mean": 1.9166666666666667,
+        "final_token_top1_accuracy": 0.6,
+        "stop_top1_accuracy": 0.0
+      },
+      "129-256": {
+        "examples": 113,
+        "stop_probability_mean": 1.710286390892876e-06,
+        "stop_probability_median": 3.761951861136481e-11,
+        "stop_rank_mean": 89742.87610619469,
+        "stop_rank_median": 110478.0,
+        "eos_probability_mean": 0.5013515132698807,
+        "newline_probability_mean": 0.013222802446431469,
+        "final_token_probability_mean": 0.40028850702709,
+        "final_token_rank_mean": 2.0442477876106193,
+        "final_token_top1_accuracy": 0.5752212389380531,
+        "stop_top1_accuracy": 0.0
+      },
+      "257-384": {
+        "examples": 85,
+        "stop_probability_mean": 6.256785599613408e-07,
+        "stop_probability_median": 1.731933346738046e-11,
+        "stop_rank_mean": 106143.5411764706,
+        "stop_rank_median": 113410.0,
+        "eos_probability_mean": 0.5891977956039174,
+        "newline_probability_mean": 0.008516054857975408,
+        "final_token_probability_mean": 0.3949483179877622,
+        "final_token_rank_mean": 2.788235294117647,
+        "final_token_top1_accuracy": 0.5294117647058824,
+        "stop_top1_accuracy": 0.0
+      },
+      "385-512": {
+        "examples": 14,
+        "stop_probability_mean": 1.91013946455712e-08,
+        "stop_probability_median": 9.104655397662587e-12,
+        "stop_rank_mean": 104920.14285714286,
+        "stop_rank_median": 112918.0,
+        "eos_probability_mean": 0.6077678276176032,
+        "newline_probability_mean": 0.016418976337314057,
+        "final_token_probability_mean": 0.43014395236968994,
+        "final_token_rank_mean": 1.5,
+        "final_token_top1_accuracy": 0.7142857142857143,
+        "stop_top1_accuracy": 0.0
+      }
+    }
+  },
+  "v1": {
+    "overall": {
+      "examples": 338,
+      "stop_probability_mean": 0.00020218815834329625,
+      "stop_probability_median": 0.0002233342092949897,
+      "stop_rank_mean": 1421.1065088757396,
+      "stop_rank_median": 131.5,
+      "eos_probability_mean": 0.00013597741524816999,
+      "newline_probability_mean": 0.00795066352644411,
+      "final_token_probability_mean": 0.5532806266327331,
+      "final_token_rank_mean": 2.07396449704142,
+      "final_token_top1_accuracy": 0.7396449704142012,
+      "stop_top1_accuracy": 0.0
+    },
+    "length_buckets": {
+      "1-64": {
+        "examples": 66,
+        "stop_probability_mean": 0.00016515791373806612,
+        "stop_probability_median": 0.00016237772797467187,
+        "stop_rank_mean": 3425.469696969697,
+        "stop_rank_median": 202.0,
+        "eos_probability_mean": 0.00016412072316866627,
+        "newline_probability_mean": 0.008359054725739648,
+        "final_token_probability_mean": 0.5226346483634574,
+        "final_token_rank_mean": 3.8333333333333335,
+        "final_token_top1_accuracy": 0.6818181818181818,
+        "stop_top1_accuracy": 0.0
+      },
+      "65-128": {
+        "examples": 60,
+        "stop_probability_mean": 0.00017465919310429476,
+        "stop_probability_median": 0.00016704203153494745,
+        "stop_rank_mean": 598.15,
+        "stop_rank_median": 187.5,
+        "eos_probability_mean": 5.341008689943768e-05,
+        "newline_probability_mean": 0.002190032586562059,
+        "final_token_probability_mean": 0.5029085748673727,
+        "final_token_rank_mean": 1.6833333333333333,
+        "final_token_top1_accuracy": 0.6833333333333333,
+        "stop_top1_accuracy": 0.0
+      },
+      "129-256": {
+        "examples": 113,
+        "stop_probability_mean": 0.00021753589243960085,
+        "stop_probability_median": 0.00024874843074940145,
+        "stop_rank_mean": 1403.7610619469026,
+        "stop_rank_median": 117.0,
+        "eos_probability_mean": 0.00011996547596127692,
+        "newline_probability_mean": 0.007501297932138798,
+        "final_token_probability_mean": 0.5750038005263273,
+        "final_token_rank_mean": 1.7079646017699115,
+        "final_token_top1_accuracy": 0.7699115044247787,
+        "stop_top1_accuracy": 0.0
+      },
+      "257-384": {
+        "examples": 85,
+        "stop_probability_mean": 0.00022627168908115892,
+        "stop_probability_median": 0.00026474386686459184,
+        "stop_rank_mean": 629.7058823529412,
+        "stop_rank_median": 111.0,
+        "eos_probability_mean": 0.0002082862080709781,
+        "newline_probability_mean": 0.007913316504630744,
+        "final_token_probability_mean": 0.5790869754136485,
+        "final_token_rank_mean": 1.576470588235294,
+        "final_token_top1_accuracy": 0.788235294117647,
+        "stop_top1_accuracy": 0.0
+      },
+      "385-512": {
+        "examples": 14,
+        "stop_probability_mean": 0.00022464101496361927,
+        "stop_probability_median": 0.0002764366363408044,
+        "stop_rank_mean": 443.85714285714283,
+        "stop_rank_median": 88.5,
+        "eos_probability_mean": 4.738335293755621e-05,
+        "newline_probability_mean": 0.03456758111573371,
+        "final_token_probability_mean": 0.5816162962998662,
+        "final_token_rank_mean": 1.4285714285714286,
+        "final_token_top1_accuracy": 0.7142857142857143,
+        "stop_top1_accuracy": 0.0
+      }
+    }
+  },
+  "weighted_stop_v1": {
+    "overall": {
+      "examples": 338,
+      "stop_probability_mean": 0.0002747822269715143,
+      "stop_probability_median": 0.00031486249645240605,
+      "stop_rank_mean": 1179.4408284023668,
+      "stop_rank_median": 84.0,
+      "eos_probability_mean": 6.293323672746478e-05,
+      "newline_probability_mean": 0.006134005218628744,
+      "final_token_probability_mean": 0.5489408937681046,
+      "final_token_rank_mean": 2.1301775147928996,
+      "final_token_top1_accuracy": 0.7455621301775148,
+      "stop_top1_accuracy": 0.0
+    },
+    "length_buckets": {
+      "1-64": {
+        "examples": 66,
+        "stop_probability_mean": 0.0002458605332869834,
+        "stop_probability_median": 0.0002793872117763385,
+        "stop_rank_mean": 3130.590909090909,
+        "stop_rank_median": 105.5,
+        "eos_probability_mean": 4.638793416922977e-05,
+        "newline_probability_mean": 0.003783802984774852,
+        "final_token_probability_mean": 0.5189976246992405,
+        "final_token_rank_mean": 4.03030303030303,
+        "final_token_top1_accuracy": 0.7121212121212122,
+        "stop_top1_accuracy": 0.0
+      },
+      "65-128": {
+        "examples": 60,
+        "stop_probability_mean": 0.00026697581560407947,
+        "stop_probability_median": 0.0002951426577055827,
+        "stop_rank_mean": 280.85,
+        "stop_rank_median": 108.0,
+        "eos_probability_mean": 1.659814310433679e-05,
+        "newline_probability_mean": 0.001781598588487062,
+        "final_token_probability_mean": 0.501379460003227,
+        "final_token_rank_mean": 1.6833333333333333,
+        "final_token_top1_accuracy": 0.7,
+        "stop_top1_accuracy": 0.0
+      },
+      "129-256": {
+        "examples": 113,
+        "stop_probability_mean": 0.00028940857837954885,
+        "stop_probability_median": 0.00032286858186125755,
+        "stop_rank_mean": 1265.929203539823,
+        "stop_rank_median": 78.0,
+        "eos_probability_mean": 6.41465972255929e-05,
+        "newline_probability_mean": 0.005286495651198774,
+        "final_token_probability_mean": 0.5698733878593925,
+        "final_token_rank_mean": 1.6902654867256637,
+        "final_token_top1_accuracy": 0.7610619469026548,
+        "stop_top1_accuracy": 0.0
+      },
+      "257-384": {
+        "examples": 85,
+        "stop_probability_mean": 0.0002846328781402008,
+        "stop_probability_median": 0.00032739114249125123,
+        "stop_rank_mean": 347.5176470588235,
+        "stop_rank_median": 75.0,
+        "eos_probability_mean": 0.00011498534249048642,
+        "newline_probability_mean": 0.007437154719569689,
+        "final_token_probability_mean": 0.573297273734694,
+        "final_token_rank_mean": 1.611764705882353,
+        "final_token_top1_accuracy": 0.788235294117647,
+        "stop_top1_accuracy": 0.0
+      },
+      "385-512": {
+        "examples": 14,
+        "stop_probability_mean": 0.00026672032745571935,
+        "stop_probability_median": 0.0003319724928587675,
+        "stop_rank_mean": 185.14285714285714,
+        "stop_rank_median": 68.5,
+        "eos_probability_mean": 1.3687298162169879e-05,
+        "newline_probability_mean": 0.034795335131661886,
+        "final_token_probability_mean": 0.5771035834082535,
+        "final_token_rank_mean": 1.7857142857142858,
+        "final_token_top1_accuracy": 0.7142857142857143,
+        "stop_top1_accuracy": 0.0
+      }
+    }
+  }
+}

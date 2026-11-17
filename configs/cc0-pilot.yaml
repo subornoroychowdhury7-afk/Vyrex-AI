@@ -1,0 +1,55 @@
+﻿project:
+  name: "VYREX AI"
+  version: "0.3.0-cc0-pilot"
+  seed: 42
+  language: "en"
+  mode: "english_pilot"
+
+model:
+  architecture: "decoder_only_transformer"
+  vocab_size: 16000
+  hidden_size: 384
+  num_layers: 6
+  num_heads: 6
+  intermediate_size: 1024
+  max_seq_len: 128
+  positional_encoding: "rope"
+  norm: "rmsnorm"
+  mlp: "swiglu"
+  dropout: 0.1
+  tie_embeddings: true
+
+training:
+  learning_rate: 0.0003
+  min_learning_rate: 0.00003
+  weight_decay: 0.01
+  betas: [0.9, 0.95]
+  micro_batch_size: 1
+  gradient_accumulation_steps: 8
+  max_steps: 200
+  warmup_steps: 20
+  gradient_clip_norm: 1.0
+  precision: "bf16"
+  log_every_steps: 10
+  eval_every_steps: 50
+  checkpoint_every_steps: 50
+  num_workers: 0
+
+data:
+  tokenizer_name: "tatoeba_cc0_pilot_v1"
+  tokenizer_vocab_size: 16000
+  train_split: 0.98
+  validation_split: 0.01
+  test_split: 0.01
+  mixture:
+    english: 1.0
+  max_document_chars: 2000000
+
+paths:
+  data_dir: "data"
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  splits_dir: "data/splits"
+  checkpoints_dir: "checkpoints/cc0_pilot"
+  logs_dir: "logs/cc0_pilot"
+  tokenizer_dir: "artifacts/tokenizer/tatoeba_cc0_pilot_v1"

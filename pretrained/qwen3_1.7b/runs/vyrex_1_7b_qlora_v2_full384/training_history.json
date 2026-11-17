@@ -1,0 +1,42 @@
+{
+  "experiment": "vyrex_qwen3_1.7b_qlora",
+  "base_model": "Qwen/Qwen3-1.7B-Base",
+  "dataset": "OASST1 Qwen3 SFT v1",
+  "quantization": "NF4 double quantization",
+  "compute_dtype": "BF16",
+  "lora_rank": 8,
+  "lora_alpha": 16,
+  "lora_dropout": 0.05,
+  "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "sequence_length": 512,
+  "micro_batch_size": 1,
+  "gradient_accumulation": 16,
+  "learning_rate": 0.0001,
+  "stop_token_weight": 5.0,
+  "epochs_requested": 1,
+  "max_steps": 384,
+  "initial_validation_loss": 1.5669351984427033,
+  "epochs": [
+    {
+      "epoch": 1,
+      "global_step": 384,
+      "train_loss": 1.5166987527930598,
+      "validation_loss": 1.3762669122733635,
+      "elapsed_seconds": 8130.33
+    }
+  ],
+  "best_validation_loss": 1.3762669122733635,
+  "final_global_step": 384,
+  "final_validation_loss": 1.3762669122733635,
+  "elapsed_seconds": 8130.56,
+  "peak_gpu_allocated_gb": 3.112,
+  "peak_gpu_reserved_gb": 3.223
+}

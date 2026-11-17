@@ -1,0 +1,440 @@
+[
+  {
+    "example_index": 242,
+    "final_token_prediction": {
+      "target": {
+        "id": 13,
+        "text": "'.'"
+      },
+      "target_probability": 0.5458282232284546,
+      "target_rank": 1,
+      "top5": [
+        {
+          "id": 13,
+          "text": "'.'",
+          "probability": 0.5458282232284546
+        },
+        {
+          "id": 11,
+          "text": "','",
+          "probability": 0.20079900324344635
+        },
+        {
+          "id": 323,
+          "text": "' and'",
+          "probability": 0.07386981695890427
+        },
+        {
+          "id": 2217,
+          "text": "'.\"\\n\\n'",
+          "probability": 0.04480430856347084
+        },
+        {
+          "id": 1189,
+          "text": "'.\"'",
+          "probability": 0.04480430856347084
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 2.808199860737659e-05,
+      "target_rank": 909,
+      "top5": [
+        {
+          "id": 1260,
+          "text": "' He'",
+          "probability": 0.3524375855922699
+        },
+        {
+          "id": 576,
+          "text": "' The'",
+          "probability": 0.10097505897283554
+        },
+        {
+          "id": 2379,
+          "text": "' They'",
+          "probability": 0.05077344924211502
+        },
+        {
+          "id": 1084,
+          "text": "' It'",
+          "probability": 0.03714664652943611
+        },
+        {
+          "id": 1634,
+          "text": "' As'",
+          "probability": 0.02553049474954605
+        }
+      ]
+    }
+  },
+  {
+    "example_index": 47,
+    "final_token_prediction": {
+      "target": {
+        "id": 13,
+        "text": "'.'"
+      },
+      "target_probability": 0.7029116153717041,
+      "target_rank": 1,
+      "top5": [
+        {
+          "id": 13,
+          "text": "'.'",
+          "probability": 0.7029116153717041
+        },
+        {
+          "id": 382,
+          "text": "'.\\n\\n'",
+          "probability": 0.15684078633785248
+        },
+        {
+          "id": 320,
+          "text": "' ('",
+          "probability": 0.04493563622236252
+        },
+        {
+          "id": 11,
+          "text": "','",
+          "probability": 0.03965556249022484
+        },
+        {
+          "id": 624,
+          "text": "'.\\n'",
+          "probability": 0.018731961026787758
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 0.00022897165035828948,
+      "target_rank": 184,
+      "top5": [
+        {
+          "id": 1096,
+          "text": "' This'",
+          "probability": 0.06348749250173569
+        },
+        {
+          "id": 576,
+          "text": "' The'",
+          "probability": 0.05964098125696182
+        },
+        {
+          "id": 758,
+          "text": "' In'",
+          "probability": 0.01605215109884739
+        },
+        {
+          "id": 11954,
+          "text": "' During'",
+          "probability": 0.013307701796293259
+        },
+        {
+          "id": 4354,
+          "text": "' However'",
+          "probability": 0.013307701796293259
+        }
+      ]
+    }
+  },
+  {
+    "example_index": 62,
+    "final_token_prediction": {
+      "target": {
+        "id": 9675,
+        "text": "' businesses'"
+      },
+      "target_probability": 0.41766583919525146,
+      "target_rank": 1,
+      "top5": [
+        {
+          "id": 9675,
+          "text": "' businesses'",
+          "probability": 0.41766583919525146
+        },
+        {
+          "id": 65624,
+          "text": "' ventures'",
+          "probability": 0.32527849078178406
+        },
+        {
+          "id": 2562,
+          "text": "' business'",
+          "probability": 0.06405113637447357
+        },
+        {
+          "id": 6350,
+          "text": "' existing'",
+          "probability": 0.04402165487408638
+        },
+        {
+          "id": 6708,
+          "text": "' ideas'",
+          "probability": 0.03025561384856701
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 0.00018126492796000093,
+      "target_rank": 131,
+      "top5": [
+        {
+          "id": 198,
+          "text": "'\\n'",
+          "probability": 0.33813807368278503
+        },
+        {
+          "id": 11,
+          "text": "','",
+          "probability": 0.031451739370822906
+        },
+        {
+          "id": 476,
+          "text": "' or'",
+          "probability": 0.020306769758462906
+        },
+        {
+          "id": 13,
+          "text": "'.'",
+          "probability": 0.011570448987185955
+        },
+        {
+          "id": 118076,
+          "text": "'\u53d6\u5f97\u4ee5\u53ca'",
+          "probability": 0.010210885666310787
+        }
+      ]
+    }
+  },
+  {
+    "example_index": 103,
+    "final_token_prediction": {
+      "target": {
+        "id": 13,
+        "text": "'.'"
+      },
+      "target_probability": 0.5663822889328003,
+      "target_rank": 1,
+      "top5": [
+        {
+          "id": 13,
+          "text": "'.'",
+          "probability": 0.5663822889328003
+        },
+        {
+          "id": 11,
+          "text": "','",
+          "probability": 0.12637698650360107
+        },
+        {
+          "id": 311,
+          "text": "' to'",
+          "probability": 0.04102860018610954
+        },
+        {
+          "id": 0,
+          "text": "'!'",
+          "probability": 0.031953103840351105
+        },
+        {
+          "id": 369,
+          "text": "' for'",
+          "probability": 0.021961025893688202
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 0.000317270023515448,
+      "target_rank": 71,
+      "top5": [
+        {
+          "id": 220,
+          "text": "' '",
+          "probability": 0.13625089824199677
+        },
+        {
+          "id": 4710,
+          "text": "' \\n\\n'",
+          "probability": 0.0034109745174646378
+        },
+        {
+          "id": 62116,
+          "text": "'\\tiVar'",
+          "probability": 0.002344326116144657
+        },
+        {
+          "id": 4354,
+          "text": "' However'",
+          "probability": 0.001943514565937221
+        },
+        {
+          "id": 18611,
+          "text": "'  \\n\\n'",
+          "probability": 0.0011788011761382222
+        }
+      ]
+    }
+  },
+  {
+    "example_index": 165,
+    "final_token_prediction": {
+      "target": {
+        "id": 30,
+        "text": "'?'"
+      },
+      "target_probability": 0.8185332417488098,
+      "target_rank": 1,
+      "top5": [
+        {
+          "id": 30,
+          "text": "'?'",
+          "probability": 0.8185332417488098
+        },
+        {
+          "id": 5267,
+          "text": "'?\\n'",
+          "probability": 0.019250057637691498
+        },
+        {
+          "id": 3351,
+          "text": "' today'",
+          "probability": 0.014991960488259792
+        },
+        {
+          "id": 13,
+          "text": "'.'",
+          "probability": 0.014991960488259792
+        },
+        {
+          "id": 937,
+          "text": "' ?'",
+          "probability": 0.011675749905407429
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 0.00038511541788466275,
+      "target_rank": 48,
+      "top5": [
+        {
+          "id": 6771,
+          "text": "' Let'",
+          "probability": 0.0008954201475717127
+        },
+        {
+          "id": 116411,
+          "text": "'\u683c\u7db2\u7ad9'",
+          "probability": 0.0008678709273226559
+        },
+        {
+          "id": 117975,
+          "text": "'\u5177\u6709\u6218\u58eb'",
+          "probability": 0.0008411693852394819
+        },
+        {
+          "id": 89998,
+          "text": "'(Initialized'",
+          "probability": 0.0007658934337086976
+        },
+        {
+          "id": 117971,
+          "text": "'\u529b\u8fd8\u662f\u81ea'",
+          "probability": 0.0006349479081109166
+        }
+      ]
+    }
+  },
+  {
+    "example_index": 216,
+    "final_token_prediction": {
+      "target": {
+        "id": 13,
+        "text": "'.'"
+      },
+      "target_probability": 0.5537609457969666,
+      "target_rank": 1,
+      "top5": [
+        {
+          "id": 13,
+          "text": "'.'",
+          "probability": 0.5537609457969666
+        },
+        {
+          "id": 0,
+          "text": "'!'",
+          "probability": 0.335873007774353
+        },
+        {
+          "id": 476,
+          "text": "' or'",
+          "probability": 0.06613731384277344
+        },
+        {
+          "id": 2219,
+          "text": "'!\\n\\n'",
+          "probability": 0.008950712159276009
+        },
+        {
+          "id": 382,
+          "text": "'.\\n\\n'",
+          "probability": 0.008950712159276009
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 0.0003854761307593435,
+      "target_rank": 46,
+      "top5": [
+        {
+          "id": 358,
+          "text": "' I'",
+          "probability": 0.001345443888567388
+        },
+        {
+          "id": 6771,
+          "text": "' Let'",
+          "probability": 0.0008686838555149734
+        },
+        {
+          "id": 116411,
+          "text": "'\u683c\u7db2\u7ad9'",
+          "probability": 0.0008160529541783035
+        },
+        {
+          "id": 138626,
+          "text": "' \u043c\u043e\u0431\u0438\u043b\u044c\u043d'",
+          "probability": 0.0006557169836014509
+        },
+        {
+          "id": 96835,
+          "text": "' sextreffen'",
+          "probability": 0.0006355427321977913
+        }
+      ]
+    }
+  }
+]

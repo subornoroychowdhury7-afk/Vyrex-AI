@@ -99,3 +99,22 @@ def test_non_object_record_raises(tmp_path):
 
     with pytest.raises(TypeError, match="must be an object"):
         list(dataset)
+
+def test_multi_worker_iteration_is_explicitly_rejected(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+
+    import vyrex_ai.data.dataset as dataset_module
+
+    path = tmp_path / "train.jsonl"
+    write_jsonl(path, [{"text": "hello"}])
+
+    monkeypatch.setattr(
+        dataset_module,
+        "get_worker_info",
+        lambda: SimpleNamespace(id=0, num_workers=2),
+    )
+
+    dataset = TokenBlockDataset(path, FakeTokenizer(), 3)
+
+    with pytest.raises(RuntimeError, match="num_workers=0"):
+        list(dataset)

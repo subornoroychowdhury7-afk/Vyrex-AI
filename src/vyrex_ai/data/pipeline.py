@@ -7,6 +7,11 @@ from pathlib import Path
 
 from .deduplication import DeduplicationResult, deduplicate_documents
 from .readers import ReadFailure, read_directory
+from .license_registry import (
+    LicenseRecord,
+    build_license_exclusions,
+    load_license_registry,
+)
 from .splitting import DatasetSplits, split_documents
 from .validation import ValidationResult, validate_document
 
@@ -28,6 +33,7 @@ class PipelineReport:
     deduplication: DeduplicationResult
     splits: DatasetSplits
     quarantined_documents: tuple[QuarantinedDocument, ...] = ()
+    license_records: tuple[LicenseRecord, ...] = ()
 
 
 def prepare_dataset(
@@ -38,19 +44,30 @@ def prepare_dataset(
     min_chars: int = 100,
     max_chars: int = 2_000_000,
     exclusions: dict[str, str] | None = None,
+    license_registry_path: str | Path | None = None,
 ) -> PipelineReport:
     """Read, validate, deduplicate, and split without modifying source files.
 
     Exclusions map resolved source paths to quarantine reasons.
     """
     read_result = read_directory(input_directory)
-    exclusions = exclusions or {}
+    combined_exclusions = dict(exclusions or {})
+    license_records: dict[str, LicenseRecord] = {}
+
+    if license_registry_path is not None:
+        license_records = load_license_registry(license_registry_path)
+        license_exclusions = build_license_exclusions(
+            read_result.documents,
+            license_records,
+        )
+        for source_path, reason in license_exclusions.items():
+            combined_exclusions.setdefault(source_path, reason)
 
     excluded_documents = []
     active_documents = []
 
     for document in read_result.documents:
-        reason = exclusions.get(document.source_path)
+        reason = combined_exclusions.get(document.source_path)
 
         if reason is not None:
             excluded_documents.append(
@@ -103,4 +120,5 @@ def prepare_dataset(
         deduplication=deduplication,
         splits=splits,
         quarantined_documents=tuple(excluded_documents),
+        license_records=tuple(license_records.values()),
     )

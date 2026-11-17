@@ -1,0 +1,24 @@
+{
+  "run_name": "vyrex_1_7b_qlora_v3",
+  "base_model": "Qwen3-1.7B-Base",
+  "dataset": "vyrex_v3_sft",
+  "rank": 16,
+  "alpha": 32,
+  "epochs": 2,
+  "total_steps": 806,
+  "initial_validation_loss": 1.5718214474294767,
+  "epochs_data": [
+    {
+      "epoch": 1,
+      "global_step": 403,
+      "train_loss": 1.5517434179589074,
+      "val_loss": 1.3709588060226892
+    },
+    {
+      "epoch": 2,
+      "global_step": 806,
+      "train_loss": 1.4616957782161406,
+      "val_loss": 1.3671096212618206
+    }
+  ]
+}

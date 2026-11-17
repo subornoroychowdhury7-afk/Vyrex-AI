@@ -51,7 +51,10 @@ def _write_jsonl(
             temporary.unlink()
 
 
-def _collect_oanc_metadata(report: PipelineReport) -> dict[str, dict]:
+def _collect_oanc_metadata(
+    report: PipelineReport,
+    corpus_root: str | Path | None = None,
+) -> dict[str, dict]:
     """Collect metadata only when a matching OANC .anc file exists."""
     source_paths = {
         result.source_path for result in report.validation_results
@@ -75,6 +78,7 @@ def _collect_oanc_metadata(report: PipelineReport) -> dict[str, dict]:
         result = read_oanc_metadata_file(
             metadata_path=metadata_path,
             document_path=source_path,
+            corpus_root=corpus_root,
         )
 
         metadata_record: dict = {"error": result.error}
@@ -93,6 +97,8 @@ def export_dataset(
     report: PipelineReport,
     source_groups: dict[str, str],
     output_directory: str | Path,
+    *,
+    corpus_root: str | Path | None = None,
 ) -> ExportResult:
     """Export prepared splits and an audit manifest to a new directory."""
     destination = Path(output_directory)
@@ -132,7 +138,9 @@ def export_dataset(
     _write_jsonl(splits["validation"], validation_path)
     _write_jsonl(splits["test"], test_path)
 
-    metadata_by_path = _collect_oanc_metadata(report)
+    metadata_by_path = _collect_oanc_metadata(
+        report, corpus_root=corpus_root
+    )
     manifest_entries = build_manifest(
         report,
         source_groups,

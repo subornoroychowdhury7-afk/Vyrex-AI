@@ -1,0 +1,27 @@
+{
+  "library": {
+    "name": "tokenizers",
+    "version": "0.23.3"
+  },
+  "schema_version": 1,
+  "tokenizer": {
+    "actual_vocab_size": 16000,
+    "algorithm": "byte-level BPE",
+    "min_frequency": 2,
+    "name": "vyrex-bpe-en-v1",
+    "requested_vocab_size": 16000,
+    "special_tokens": {
+      "<|bos|>": 1,
+      "<|eos|>": 2,
+      "<|pad|>": 0
+    }
+  },
+  "training_corpus": {
+    "character_count": 2136014,
+    "dataset_name": "tatoeba_cc0_pilot_v1",
+    "document_count": 34723,
+    "file_size_bytes": 2593678,
+    "sha256": "7186e32663bd8c3067b74d23440f296ef3da8d4bc0a77369bae2d5c585cfffa7",
+    "text_bytes": 2139642
+  }
+}

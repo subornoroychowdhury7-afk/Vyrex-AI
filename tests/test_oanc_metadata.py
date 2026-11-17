@@ -113,3 +113,43 @@ def test_reads_matching_metadata_file(tmp_path: Path):
     assert result.error is None
     assert result.metadata is not None
     assert Path(result.metadata.document_path) == text_file.resolve()
+from vyrex_ai.data.oanc_metadata import _classify_document
+
+
+def test_classifies_written_oanc_document(tmp_path: Path):
+    root = tmp_path / "OANC-GrAF"
+    document = root / "data" / "written_2" / "technical" / "sample.txt"
+    document.parent.mkdir(parents=True)
+    document.touch()
+
+    assert _classify_document(document, root) == (
+        "written",
+        "written_2",
+        "technical",
+    )
+
+
+def test_classifies_spoken_oanc_document(tmp_path: Path):
+    root = tmp_path / "OANC-GrAF"
+    document = (
+        root / "data" / "spoken" / "telephone" / "sample.txt"
+    )
+    document.parent.mkdir(parents=True)
+    document.touch()
+
+    assert _classify_document(document, root) == (
+        "spoken",
+        None,
+        "telephone",
+    )
+
+
+def test_rejects_document_outside_corpus_root(tmp_path: Path):
+    root = tmp_path / "OANC-GrAF"
+    outside = tmp_path / "outside.txt"
+    outside.touch()
+
+    import pytest
+
+    with pytest.raises(ValueError, match="outside OANC corpus root"):
+        _classify_document(outside, root)

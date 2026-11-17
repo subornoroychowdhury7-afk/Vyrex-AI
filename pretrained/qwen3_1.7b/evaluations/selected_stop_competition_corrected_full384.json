@@ -1,0 +1,440 @@
+[
+  {
+    "example_index": 242,
+    "final_token_prediction": {
+      "target": {
+        "id": 13,
+        "text": "'.'"
+      },
+      "target_probability": 0.5252646803855896,
+      "target_rank": 1,
+      "top5": [
+        {
+          "id": 13,
+          "text": "'.'",
+          "probability": 0.5252646803855896
+        },
+        {
+          "id": 11,
+          "text": "','",
+          "probability": 0.15049085021018982
+        },
+        {
+          "id": 323,
+          "text": "' and'",
+          "probability": 0.09127730131149292
+        },
+        {
+          "id": 10040,
+          "text": "'.\"\\n'",
+          "probability": 0.04311634972691536
+        },
+        {
+          "id": 1189,
+          "text": "'.\"'",
+          "probability": 0.04311634972691536
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 4.504129545463559e-13,
+      "target_rank": 141073,
+      "top5": [
+        {
+          "id": 1260,
+          "text": "' He'",
+          "probability": 0.31747329235076904
+        },
+        {
+          "id": 576,
+          "text": "' The'",
+          "probability": 0.16993121802806854
+        },
+        {
+          "id": 1084,
+          "text": "' It'",
+          "probability": 0.04296533763408661
+        },
+        {
+          "id": 2379,
+          "text": "' They'",
+          "probability": 0.03791677579283714
+        },
+        {
+          "id": 758,
+          "text": "' In'",
+          "probability": 0.020295387133955956
+        }
+      ]
+    }
+  },
+  {
+    "example_index": 47,
+    "final_token_prediction": {
+      "target": {
+        "id": 13,
+        "text": "'.'"
+      },
+      "target_probability": 0.8439853191375732,
+      "target_rank": 1,
+      "top5": [
+        {
+          "id": 13,
+          "text": "'.'",
+          "probability": 0.8439853191375732
+        },
+        {
+          "id": 624,
+          "text": "'.\\n'",
+          "probability": 0.0420195534825325
+        },
+        {
+          "id": 320,
+          "text": "' ('",
+          "probability": 0.0420195534825325
+        },
+        {
+          "id": 11,
+          "text": "','",
+          "probability": 0.02548614889383316
+        },
+        {
+          "id": 382,
+          "text": "'.\\n\\n'",
+          "probability": 0.01984863169491291
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 1.4480390085787331e-13,
+      "target_rank": 146993,
+      "top5": [
+        {
+          "id": 2585,
+          "text": "' How'",
+          "probability": 0.22293032705783844
+        },
+        {
+          "id": 3555,
+          "text": "' What'",
+          "probability": 0.10530483722686768
+        },
+        {
+          "id": 1416,
+          "text": "' If'",
+          "probability": 0.08201149106025696
+        },
+        {
+          "id": 576,
+          "text": "' The'",
+          "probability": 0.06387060880661011
+        },
+        {
+          "id": 2160,
+          "text": "' Is'",
+          "probability": 0.034187473356723785
+        }
+      ]
+    }
+  },
+  {
+    "example_index": 62,
+    "final_token_prediction": {
+      "target": {
+        "id": 9675,
+        "text": "' businesses'"
+      },
+      "target_probability": 0.4605954885482788,
+      "target_rank": 1,
+      "top5": [
+        {
+          "id": 9675,
+          "text": "' businesses'",
+          "probability": 0.4605954885482788
+        },
+        {
+          "id": 65624,
+          "text": "' ventures'",
+          "probability": 0.3587121069431305
+        },
+        {
+          "id": 2562,
+          "text": "' business'",
+          "probability": 0.048546403646469116
+        },
+        {
+          "id": 6350,
+          "text": "' existing'",
+          "probability": 0.03780797868967056
+        },
+        {
+          "id": 6708,
+          "text": "' ideas'",
+          "probability": 0.01785922423005104
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 1.3111432512619148e-12,
+      "target_rank": 135017,
+      "top5": [
+        {
+          "id": 198,
+          "text": "'\\n'",
+          "probability": 0.8155670762062073
+        },
+        {
+          "id": 11,
+          "text": "','",
+          "probability": 0.06694582104682922
+        },
+        {
+          "id": 271,
+          "text": "'\\n\\n'",
+          "probability": 0.040604691952466965
+        },
+        {
+          "id": 476,
+          "text": "' or'",
+          "probability": 0.040604691952466965
+        },
+        {
+          "id": 624,
+          "text": "'.\\n'",
+          "probability": 0.005495247431099415
+        }
+      ]
+    }
+  },
+  {
+    "example_index": 103,
+    "final_token_prediction": {
+      "target": {
+        "id": 13,
+        "text": "'.'"
+      },
+      "target_probability": 0.513165295124054,
+      "target_rank": 1,
+      "top5": [
+        {
+          "id": 13,
+          "text": "'.'",
+          "probability": 0.513165295124054
+        },
+        {
+          "id": 624,
+          "text": "'.\\n'",
+          "probability": 0.11450266093015671
+        },
+        {
+          "id": 11,
+          "text": "','",
+          "probability": 0.11450266093015671
+        },
+        {
+          "id": 1119,
+          "text": "' into'",
+          "probability": 0.028950806707143784
+        },
+        {
+          "id": 0,
+          "text": "'!'",
+          "probability": 0.028950806707143784
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 4.7339935790868815e-12,
+      "target_rank": 142153,
+      "top5": [
+        {
+          "id": 220,
+          "text": "' '",
+          "probability": 0.8436630964279175
+        },
+        {
+          "id": 256,
+          "text": "'  '",
+          "probability": 0.0224828589707613
+        },
+        {
+          "id": 2303,
+          "text": "'  \\n'",
+          "probability": 0.01062015164643526
+        },
+        {
+          "id": 715,
+          "text": "' \\n'",
+          "probability": 0.008270982652902603
+        },
+        {
+          "id": 576,
+          "text": "' The'",
+          "probability": 0.007299115881323814
+        }
+      ]
+    }
+  },
+  {
+    "example_index": 165,
+    "final_token_prediction": {
+      "target": {
+        "id": 30,
+        "text": "'?'"
+      },
+      "target_probability": 0.12928436696529388,
+      "target_rank": 2,
+      "top5": [
+        {
+          "id": 5267,
+          "text": "'?\\n'",
+          "probability": 0.7439801692962646
+        },
+        {
+          "id": 30,
+          "text": "'?'",
+          "probability": 0.12928436696529388
+        },
+        {
+          "id": 17607,
+          "text": "' ?\\n'",
+          "probability": 0.015440816059708595
+        },
+        {
+          "id": 624,
+          "text": "'.\\n'",
+          "probability": 0.0120253199711442
+        },
+        {
+          "id": 11,
+          "text": "','",
+          "probability": 0.0120253199711442
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 5.3666134036678415e-12,
+      "target_rank": 147515,
+      "top5": [
+        {
+          "id": 358,
+          "text": "' I'",
+          "probability": 0.12545301020145416
+        },
+        {
+          "id": 151643,
+          "text": "'<|endoftext|>'",
+          "probability": 0.08622250705957413
+        },
+        {
+          "id": 6771,
+          "text": "' Let'",
+          "probability": 0.0592598058283329
+        },
+        {
+          "id": 5267,
+          "text": "'?\\n'",
+          "probability": 0.04615158587694168
+        },
+        {
+          "id": 4894,
+          "text": "'!\\n'",
+          "probability": 0.035942889750003815
+        }
+      ]
+    }
+  },
+  {
+    "example_index": 216,
+    "final_token_prediction": {
+      "target": {
+        "id": 13,
+        "text": "'.'"
+      },
+      "target_probability": 0.26881229877471924,
+      "target_rank": 1,
+      "top5": [
+        {
+          "id": 13,
+          "text": "'.'",
+          "probability": 0.26881229877471924
+        },
+        {
+          "id": 382,
+          "text": "'.\\n\\n'",
+          "probability": 0.20935124158859253
+        },
+        {
+          "id": 0,
+          "text": "'!'",
+          "probability": 0.20935124158859253
+        },
+        {
+          "id": 2219,
+          "text": "'!\\n\\n'",
+          "probability": 0.12697795033454895
+        },
+        {
+          "id": 476,
+          "text": "' or'",
+          "probability": 0.07701601833105087
+        }
+      ]
+    },
+    "stop_prediction": {
+      "target": {
+        "id": 151645,
+        "text": "'<|im_end|>'"
+      },
+      "target_probability": 9.256981986505153e-11,
+      "target_rank": 109375,
+      "top5": [
+        {
+          "id": 358,
+          "text": "' I'",
+          "probability": 0.25049707293510437
+        },
+        {
+          "id": 151643,
+          "text": "'<|endoftext|>'",
+          "probability": 0.1721639633178711
+        },
+        {
+          "id": 54275,
+          "text": "' ```'",
+          "probability": 0.05589345470070839
+        },
+        {
+          "id": 6771,
+          "text": "' Let'",
+          "probability": 0.05589345470070839
+        },
+        {
+          "id": 5692,
+          "text": "' Here'",
+          "probability": 0.05589345470070839
+        }
+      ]
+    }
+  }
+]
