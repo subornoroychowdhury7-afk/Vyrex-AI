@@ -35,6 +35,10 @@ VYREX AI is an independent, locally-running conversational AI assistant. It can 
 - [How to Install It](#how-to-install-it)
 - [How to Use It (Single Prompt)](#how-to-use-it-single-prompt)
 - [How to Have a Conversation With It (Interactive Chat)](#how-to-have-a-conversation-with-it-interactive-chat)
+- [🚀 Production Serving (OpenAI-Compatible REST API)](#-production-serving-openai-compatible-rest-api)
+- [🐳 Docker & Containerization](#-docker--containerization)
+- [⚡ High-Throughput Inference with vLLM](#-high-throughput-inference-with-vllm)
+- [☁️ Cloud Deployment (Modal, RunPod, Kubernetes, AWS)](#-cloud-deployment-modal-runpod-kubernetes-aws)
 - [How the Training Was Done](#how-the-training-was-done)
 - [About the Creator](#about-the-creator)
 - [License](#license)
@@ -328,6 +332,115 @@ python vyrex_1_7b_chat.py --sample --max-new-tokens 300
 | `--sample` | flag | `False` | Enables sampling for creative responses |
 | `--bias` | float | `4.8` | Strength of calibrated boundary stop-token bias |
 | `--system` | string | Built-in VYREX prompt | Override system personality prompt |
+
+---
+
+## 🚀 Production Serving (OpenAI-Compatible REST API)
+
+VYREX AI provides a production-grade, asynchronous **FastAPI** inference server adhering to the official **OpenAI REST API specification**. Any application built with LangChain, LlamaIndex, the official `openai` Python SDK, or standard HTTP requests can connect directly to VYREX AI!
+
+### 1. Start the API Server
+
+```bash
+# Start server on http://localhost:8000
+python scripts/serve_vyrex_api.py --port 8000 --host 0.0.0.0 --backend hf
+```
+
+* **Interactive Swagger Docs:** `http://localhost:8000/docs`
+* **Health Check & Telemetry:** `http://localhost:8000/v1/health`
+* **Model Listing:** `http://localhost:8000/v1/models`
+* **Chat Completions:** `http://localhost:8000/v1/chat/completions`
+
+### 2. Connect Using the Official OpenAI Python SDK
+
+```python
+from openai import OpenAI
+
+# Point client to your local VYREX AI server
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="vyrex-local")
+
+response = client.chat.completions.create(
+    model="vyrex-ai-1.7b",
+    messages=[
+        {"role": "user", "content": "Who created you and what is your architecture?"}
+    ],
+    temperature=0.7,
+    max_tokens=256,
+)
+
+print(response.choices[0].message.content)
+```
+
+### 3. Streaming Responses (Server-Sent Events)
+
+```bash
+curl -X POST http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "vyrex-ai-1.7b",
+    "messages": [{"role": "user", "content": "Explain 4-bit quantization in two sentences."}],
+    "stream": true
+  }'
+```
+
+---
+
+## 🐳 Docker & Containerization
+
+A complete multi-stage, GPU-accelerated Docker setup with NVIDIA CUDA 12 and healthcheck probes is included:
+
+### Run with Docker Compose:
+
+```bash
+# Build and run with automatic GPU pass-through
+docker compose up --build -d
+
+# Check live logs
+docker compose logs -f
+
+# Verify service health
+curl http://localhost:8000/v1/health
+```
+
+### Manual Docker Build & Run:
+
+```bash
+docker build -t vyrex-ai:latest .
+
+docker run -d --gpus all \
+  -p 8000:8000 \
+  -e VYREX_BACKEND=hf \
+  --name vyrex-api \
+  vyrex-ai:latest
+```
+
+---
+
+## ⚡ High-Throughput Inference with vLLM
+
+For enterprise production with multi-user concurrency, continuous batching, and PagedAttention:
+
+```bash
+# Option A: Direct vLLM serving with dynamic LoRA adapter
+python scripts/serve_vllm.py --port 8000
+
+# Option B: Merge weights into a standalone unified checkpoint (0% adapter overhead)
+python scripts/merge_lora_weights.py --output-dir pretrained/vyrex_1_7b_merged
+vllm serve pretrained/vyrex_1_7b_merged --port 8000 --max-model-len 4096
+```
+
+---
+
+## ☁️ Cloud Deployment (Modal, RunPod, Kubernetes, AWS)
+
+Production deployment templates for all major cloud providers are available in [`deploy/`](deploy/):
+
+| Platform | Deployment Target | Command / Config |
+|---|---|---|
+| **Modal** | Serverless Cloud GPU (Auto-scales to 0) | `modal deploy deploy/modal_app.py` |
+| **RunPod** | Serverless Worker Handler | `python deploy/runpod_handler.py` |
+| **Kubernetes** | EKS / GKE / On-Premise Cluster | `kubectl apply -f deploy/k8s-deployment.yaml` |
+| **AWS SageMaker** | Dedicated Real-Time Endpoint | `python deploy/sagemaker_deploy.py --role-arn <ARN>` |
 
 ---
 
