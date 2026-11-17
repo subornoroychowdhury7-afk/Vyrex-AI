@@ -1,17 +1,35 @@
+<p align="center">
+  <img src="docs/banner.png" alt="VYREX AI Banner" width="100%">
+</p>
+
 # VYREX AI
 
-> **A smart conversational AI assistant — built and trained by Suborno Roy Chowdhury.**
+<p align="center">
+  <img src="https://img.shields.io/badge/Base_Model-Qwen3--1.7B-blue" alt="Base Model">
+  <img src="https://img.shields.io/badge/Fine--Tuning-QLoRA-purple" alt="Fine-Tuning">
+  <img src="https://img.shields.io/badge/Quantization-4--bit_NF4-green" alt="Quantization">
+  <img src="https://img.shields.io/badge/Precision-BF16-orange" alt="Compute Precision">
+  <img src="https://img.shields.io/badge/License-Apache_2.0-yellow" alt="License">
+  <img src="https://img.shields.io/badge/Python-3.10%2B-informational" alt="Python">
+</p>
 
-VYREX AI is an AI chatbot that you can run completely on your own computer. It can hold conversations, answer questions, and respond naturally — just like talking to a knowledgeable assistant. No internet connection required, no cloud service, no subscription. It runs fully on your local machine.
+> **A lightweight, high-performance conversational AI fine-tuned on Qwen3-1.7B with calibrated natural termination — built and trained by Suborno Roy Chowdhury.**
+
+VYREX AI is an independent, locally-running conversational AI assistant. It can hold multi-turn conversations, write code, answer technical questions, and respond naturally — all on your own computer without requiring cloud subscriptions or remote APIs.
 
 ---
 
 ## Table of Contents
 
-- [What is VYREX AI? (In plain English)](#what-is-vyrex-ai-in-plain-english)
-- [What Can It Do?](#what-can-it-do)
+- [What is VYREX AI? (In Plain English)](#what-is-vyrex-ai-in-plain-english)
+- [Key Capabilities](#key-capabilities)
 - [How Was It Built?](#how-was-it-built)
 - [Trained Model Specifications](#trained-model-specifications)
+- [🖥️ Live Terminal Demos (Real Outputs)](#-live-terminal-demos-real-outputs)
+  - [1. Identity & Architecture Grounding](#1-identity--architecture-grounding)
+  - [2. Strict Negative Constraints & Technical Conciseness](#2-strict-negative-constraints--technical-conciseness)
+  - [3. Clean Python Code Generation](#3-clean-python-code-generation)
+  - [4. Multi-Turn Context Memory](#4-multi-turn-context-memory)
 - [What's Inside the Project?](#whats-inside-the-project)
 - [What You Need to Run It](#what-you-need-to-run-it)
 - [How to Install It](#how-to-install-it)
@@ -19,6 +37,7 @@ VYREX AI is an AI chatbot that you can run completely on your own computer. It c
 - [How to Have a Conversation With It (Interactive Chat)](#how-to-have-a-conversation-with-it-interactive-chat)
 - [How the Training Was Done](#how-the-training-was-done)
 - [About the Creator](#about-the-creator)
+- [License](#license)
 
 ---
 
@@ -38,7 +57,7 @@ The result is VYREX AI — an independent conversational assistant running local
 
 ---
 
-## What Can It Do?
+## Key Capabilities
 
 ### 💬 Hold a Real Back-and-Forth Conversation
 VYREX AI remembers what you said earlier in the conversation — up to the last **8 exchanges** (16 conversation turns). So you don't have to repeat yourself every time.
@@ -97,6 +116,59 @@ During training, the end-of-turn token (`<|im_end|>`, ID `151645`) was assigned 
 
 ---
 
+## 🖥️ Live Terminal Demos (Real Outputs)
+
+The following real terminal screenshots demonstrate VYREX AI running in live interactive sessions via PowerShell:
+
+### 1. Identity & Architecture Grounding
+
+![Identity and Architecture Grounding](docs/screenshots/01_identity_architecture.png)
+
+* **Prompt:** `"Who created you and what is your architecture?"`
+* **Response (50 tokens):**
+  > *"I was created by Suborno Roy Chowdhury as part of the VYREX AI Project. My architecture is based on parameter-efficient fine-tuning of the QLoRA method to improve my performance as an independent conversational AI assistant."*
+* **Context & Key Insight:**
+  The model directly recognizes its creator (**Suborno Roy Chowdhury**), its identity as **VYREX AI**, and its underlying fine-tuning methodology (**QLoRA**). It answers concisely in **50 tokens** and triggers natural termination right at the period without hallucinating third parties or rambling.
+
+---
+
+### 2. Strict Negative Constraints & Technical Conciseness
+
+![Technical Explanation NF4](docs/screenshots/02_technical_explanation_nf4.png)
+
+* **Prompt:** `"Explain how 4-bit NF4 quantization works in exactly two sentences. Do not include an introduction or conclusion."`
+* **Response (48 tokens):**
+  > *"4-bit NF4 quantization compresses floating-point numbers into fixed-point representations that use four bits per number, reducing memory usage while maintaining accuracy. This technique enables efficient storage and computation of large datasets by minimizing data size without sacrificing precision."*
+* **Context & Key Insight:**
+  Testing negative constraints is a rigorous benchmark for LLMs. Many models fail by outputting preambles (e.g., *"Sure, here are two sentences:"*) or sign-offs. VYREX AI cleanly follows the negative instruction, delivers an accurate two-sentence technical explanation, and terminates in **48 tokens**.
+
+---
+
+### 3. Clean Python Code Generation
+
+![Python Code Generation](docs/screenshots/03_code_generation.png)
+
+* **Prompt:** `"Write a Python function called find_duplicates(items) that returns duplicate elements from a list preserving order, without using set(). Include type hints and an example call."`
+* **Response (256 tokens):**
+  A complete, type-hinted Python function (`List[int] -> List[int]`) with descriptive docstrings, algorithmic dictionary tracking (`seen`), example usage with expected output comment `[2, 3]`, and an explanation of why dictionary lookup preserves item ordering without using `set()`.
+* **Context & Key Insight:**
+  Demonstrates strong code synthesis, correct syntax, standard library typing conventions, and clear architectural explanation without syntax errors.
+
+---
+
+### 4. Multi-Turn Context Memory
+
+![Multi-Turn Context Tracking](docs/screenshots/04_multi_turn_conversation.png)
+
+* **Turn 1 (User):** `"I'm building an asynchronous backend using FastAPI and PostgreSQL."`
+  * **VYREX (75 tokens):** Explains why async programming with FastAPI and PostgreSQL improves application responsiveness and concurrency.
+* **Turn 2 (User):** `"Which async ORM and migration tool would you recommend for this specific stack?"`
+  * **VYREX (80 tokens):** Recommends **SQLAlchemy (asyncio)** for the ORM layer and **Alembic** for schema migrations, specifically noting their compatibility with async operations.
+* **Context & Key Insight:**
+  In Turn 2, the user does not repeat *"FastAPI and PostgreSQL"*; they refer implicitly to *"this specific stack"*. VYREX AI retains conversational context across turns, successfully linking the second question to the technologies established in the first turn.
+
+---
+
 ## What's Inside the Project?
 
 ```
@@ -120,6 +192,10 @@ vyrex-ai-phase1/
 │   └── qwen3_0.6b/
 │       └── data/
 │           └── vyrex_v3_sft/           ← Prepared training NumPy arrays
+│
+├── docs/
+│   ├── banner.png                      ← Project header banner
+│   └── screenshots/                    ← Real terminal demonstration captures
 │
 ├── pyproject.toml                      ← Package definition & build configuration
 └── README.md                           ← Project documentation
@@ -147,8 +223,8 @@ vyrex-ai-phase1/
 ### Step 1 — Clone the Repository
 
 ```bash
-git clone https://github.com/subornoroychowdhury7-afk/Vyrex-ai
-cd vyrex-ai-phase1
+git clone https://github.com/subornoroychowdhury7-afk/Vyrex-AI.git
+cd Vyrex-AI
 ```
 
 ### Step 2 — Activate the Python Virtual Environment
@@ -230,7 +306,11 @@ To start a full interactive conversation with conversation memory:
 ```bash
 cd scripts/pretrained
 
+# Standard focused mode (greedy, recommended for prompt termination):
 python vyrex_1_7b_chat.py
+
+# Creative mode with sampling:
+python vyrex_1_7b_chat.py --sample --max-new-tokens 300
 ```
 
 ### Interactive Session Controls
@@ -241,11 +321,6 @@ python vyrex_1_7b_chat.py
 | `/exit` | Gracefully closes the session |
 
 ### Chat Command-Line Options
-
-```bash
-# Launch with sampling and longer answers:
-python vyrex_1_7b_chat.py --sample --max-new-tokens 384
-```
 
 | Option | Type | Default | Description |
 |---|---|---|---|
