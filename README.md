@@ -147,7 +147,7 @@ vyrex-ai-phase1/
 ### Step 1 — Clone the Repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/subornoroychowdhury7-afk/Vyrex-ai
 cd vyrex-ai-phase1
 ```
 
