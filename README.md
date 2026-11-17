@@ -33,12 +33,12 @@ VYREX AI is an independent, locally-running conversational AI assistant. It can 
 - [What's Inside the Project?](#whats-inside-the-project)
 - [What You Need to Run It](#what-you-need-to-run-it)
 - [How to Install It](#how-to-install-it)
-- [How to Use It (Single Prompt)](#how-to-use-it-single-prompt)
-- [How to Have a Conversation With It (Interactive Chat)](#how-to-have-a-conversation-with-it-interactive-chat)
-- [🚀 Production Serving (OpenAI-Compatible REST API)](#-production-serving-openai-compatible-rest-api)
-- [🐳 Docker & Containerization](#-docker--containerization)
-- [⚡ High-Throughput Inference with vLLM](#-high-throughput-inference-with-vllm)
-- [☁️ Cloud Deployment (Modal, RunPod, Kubernetes, AWS)](#-cloud-deployment-modal-runpod-kubernetes-aws)
+- [💬 How to Chat With VYREX AI (Interactive Terminal)](#-how-to-chat-with-vyrex-ai-interactive-terminal)
+- [⚡ How to Run a Single Prompt](#-how-to-run-a-single-prompt)
+- [🚀 Production Serving: OpenAI-Compatible REST API](#-production-serving-openai-compatible-rest-api)
+- [🐳 Docker & Containerization (Optional)](#-docker--containerization-optional)
+- [🏎️ Turbocharged Inference with vLLM](#️-turbocharged-inference-with-vllm)
+- [☁️ Cloud Deployment (Deploy to the Internet)](#️-cloud-deployment-deploy-to-the-internet)
 - [How the Training Was Done](#how-the-training-was-done)
 - [About the Creator](#about-the-creator)
 - [License](#license)
@@ -278,85 +278,88 @@ Ensure the base model and adapter are in place:
 
 ---
 
-## How to Use It (Single Prompt)
+## 💬 How to Chat With VYREX AI (Interactive Terminal)
 
-To query VYREX AI with a single prompt:
+The fastest and easiest way to talk to VYREX AI is through the interactive terminal chat. It gives you a clean back-and-forth chat session with conversation memory (it remembers what you said previously).
 
-```bash
-cd scripts/pretrained
-
-# Basic query (greedy decoding)
-python vyrex_1_7b_inference.py --prompt "What is machine learning?"
-
-# Creative query with sampling
-python vyrex_1_7b_inference.py --prompt "Write a short poem about the night sky." --sample --max-new-tokens 256
+### Start Chatting (Windows PowerShell):
+```powershell
+.\.venv\Scripts\python scripts/pretrained/vyrex_1_7b_chat.py
 ```
 
-### Inference Command-Line Options
+### Start Chatting (Linux / macOS):
+```bash
+python scripts/pretrained/vyrex_1_7b_chat.py
+```
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `--prompt` | string | `"Say hello in one clear sentence."` | Input text prompt |
-| `--max-new-tokens` | integer | `192` | Maximum generated output tokens |
-| `--sample` | flag | `False` | Enables sampling (`temperature=0.7`, `top_p=0.9`) |
-| `--bias` | float | `4.8` | Strength of calibrated boundary stop-token bias |
+### What You Will See:
+```text
+==========================================================
+                VYREX AI INTERACTIVE CHAT
+==========================================================
+Creator: Suborno Roy Chowdhury | VYREX AI Project
+Model: Qwen3-1.7B + VYREX V3 Checkpoint
+Status: Active | Creator Bio & Natural Termination Enabled
+Commands: /reset = clear history | /exit = quit
+==========================================================
+
+You: 
+```
+
+### In-Chat Commands:
+* `/reset` — Clears conversation memory and starts fresh.
+* `/exit` — Closes the chat session.
+
+### Optional Modes:
+* **Longer responses (e.g., for writing longer code):**
+  ```powershell
+  .\.venv\Scripts\python scripts/pretrained/vyrex_1_7b_chat.py --max-new-tokens 512
+  ```
+* **Creative / brainstorming mode (Sampling):**
+  ```powershell
+  .\.venv\Scripts\python scripts/pretrained/vyrex_1_7b_chat.py --sample
+  ```
 
 ---
 
-## How to Have a Conversation With It (Interactive Chat)
+## ⚡ How to Run a Single Prompt
 
-To start a full interactive conversation with conversation memory:
+If you just want a quick answer to a single question without opening a full chat session:
 
-```bash
-cd scripts/pretrained
-
-# Standard focused mode (greedy, recommended for prompt termination):
-python vyrex_1_7b_chat.py
-
-# Creative mode with sampling:
-python vyrex_1_7b_chat.py --sample --max-new-tokens 300
+```powershell
+.\.venv\Scripts\python scripts/pretrained/vyrex_1_7b_inference.py --prompt "What is machine learning?"
 ```
-
-### Interactive Session Controls
-
-| Command | Action |
-|---|---|
-| `/reset` | Clears conversation history and starts a fresh turn |
-| `/exit` | Gracefully closes the session |
-
-### Chat Command-Line Options
-
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `--max-new-tokens` | integer | `256` | Maximum new tokens per assistant turn |
-| `--sample` | flag | `False` | Enables sampling for creative responses |
-| `--bias` | float | `4.8` | Strength of calibrated boundary stop-token bias |
-| `--system` | string | Built-in VYREX prompt | Override system personality prompt |
 
 ---
 
-## 🚀 Production Serving (OpenAI-Compatible REST API)
+## 🚀 Production Serving: OpenAI-Compatible REST API
 
-VYREX AI provides a production-grade, asynchronous **FastAPI** inference server adhering to the official **OpenAI REST API specification**. Any application built with LangChain, LlamaIndex, the official `openai` Python SDK, or standard HTTP requests can connect directly to VYREX AI!
+### What is this? (In Plain English)
+Think of this like turning VYREX AI into **your own private OpenAI service running locally on your computer**. 
+Instead of only chatting inside a command-line terminal, you start a background web server. Any external app—a web frontend (like Next.js or React), a mobile app, or AI frameworks (like LangChain, LlamaIndex, or AutoGen)—can send questions to VYREX AI and receive answers using the exact same standard format that OpenAI uses!
 
-### 1. Start the API Server
+### 1. Start the API Server (No Docker Needed!)
 
-```bash
-# Start server on http://localhost:8000
-python scripts/serve_vyrex_api.py --port 8000 --host 0.0.0.0 --backend hf
+Run this command directly in your PowerShell terminal:
+```powershell
+.\.venv\Scripts\python scripts/serve_vyrex_api.py --port 8000
 ```
 
-* **Interactive Swagger Docs:** `http://localhost:8000/docs`
-* **Health Check & Telemetry:** `http://localhost:8000/v1/health`
+Once running, your local server gives you:
+* **Interactive Web Playground (Swagger UI):** Open [`http://localhost:8000/docs`](http://localhost:8000/docs) in your web browser!  
+  *(You can test chatting with the model right inside your browser with a click-to-test visual interface).*
+* **Health & GPU Memory Monitor:** `http://localhost:8000/v1/health`
 * **Model Listing:** `http://localhost:8000/v1/models`
-* **Chat Completions:** `http://localhost:8000/v1/chat/completions`
+* **Chat Completions Endpoint:** `http://localhost:8000/v1/chat/completions`
 
-### 2. Connect Using the Official OpenAI Python SDK
+### 2. Connect with the Official OpenAI Python Library
+
+Because VYREX AI strictly follows the OpenAI standard, you can literally use the official `openai` Python library:
 
 ```python
 from openai import OpenAI
 
-# Point client to your local VYREX AI server
+# Connect to your local VYREX AI server
 client = OpenAI(base_url="http://localhost:8000/v1", api_key="vyrex-local")
 
 response = client.chat.completions.create(
@@ -371,76 +374,62 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
-### 3. Streaming Responses (Server-Sent Events)
+### 3. Word-by-Word Streaming (Like ChatGPT)
 
-```bash
-curl -X POST http://localhost:8000/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "vyrex-ai-1.7b",
-    "messages": [{"role": "user", "content": "Explain 4-bit quantization in two sentences."}],
-    "stream": true
-  }'
+VYREX AI supports Server-Sent Events (SSE) streaming so words appear in real-time as they are thought of and generated:
+
+```powershell
+# Run the built-in test client to see streaming live in action:
+.\.venv\Scripts\python scripts/test_api_client.py
 ```
 
 ---
 
-## 🐳 Docker & Containerization
+## 🐳 Docker & Containerization (Optional)
 
-A complete multi-stage, GPU-accelerated Docker setup with NVIDIA CUDA 12 and healthcheck probes is included:
+> [!NOTE]
+> **Docker is completely optional.** You can run VYREX AI directly using the PowerShell commands above. However, if you want to package the entire project into a self-contained container for Linux servers or cloud deployments, production Docker files are included:
 
-### Run with Docker Compose:
-
+### Build and Run with Docker Compose:
 ```bash
-# Build and run with automatic GPU pass-through
+# Requires Docker Desktop with NVIDIA Container Toolkit
 docker compose up --build -d
 
 # Check live logs
 docker compose logs -f
 
-# Verify service health
+# Check health
 curl http://localhost:8000/v1/health
-```
-
-### Manual Docker Build & Run:
-
-```bash
-docker build -t vyrex-ai:latest .
-
-docker run -d --gpus all \
-  -p 8000:8000 \
-  -e VYREX_BACKEND=hf \
-  --name vyrex-api \
-  vyrex-ai:latest
 ```
 
 ---
 
-## ⚡ High-Throughput Inference with vLLM
+## 🏎️ Turbocharged Inference with vLLM
 
-For enterprise production with multi-user concurrency, continuous batching, and PagedAttention:
+### What is vLLM? (In Plain English)
+Normally, when multiple users send questions to an AI model at the same time, they have to wait in line one-by-one. **vLLM** is an advanced serving engine that handles multiple requests simultaneously using **continuous batching** and **PagedAttention** (similar to how operating systems handle virtual memory). This delivers **5x to 10x higher tokens per second**!
 
 ```bash
-# Option A: Direct vLLM serving with dynamic LoRA adapter
+# Serve with high throughput using vLLM:
 python scripts/serve_vllm.py --port 8000
 
-# Option B: Merge weights into a standalone unified checkpoint (0% adapter overhead)
+# Or merge the LoRA weights into a standalone model for 0% adapter overhead:
 python scripts/merge_lora_weights.py --output-dir pretrained/vyrex_1_7b_merged
 vllm serve pretrained/vyrex_1_7b_merged --port 8000 --max-model-len 4096
 ```
 
 ---
 
-## ☁️ Cloud Deployment (Modal, RunPod, Kubernetes, AWS)
+## ☁️ Cloud Deployment (Deploy to the Internet)
 
-Production deployment templates for all major cloud providers are available in [`deploy/`](deploy/):
+If you want to host VYREX AI on cloud GPUs so friends, recruiters, or users on the internet can chat with it, production deployment templates are located in [`deploy/`](deploy/):
 
-| Platform | Deployment Target | Command / Config |
+| Cloud Platform | What It Is (In Plain English) | How to Deploy |
 |---|---|---|
-| **Modal** | Serverless Cloud GPU (Auto-scales to 0) | `modal deploy deploy/modal_app.py` |
-| **RunPod** | Serverless Worker Handler | `python deploy/runpod_handler.py` |
-| **Kubernetes** | EKS / GKE / On-Premise Cluster | `kubectl apply -f deploy/k8s-deployment.yaml` |
-| **AWS SageMaker** | Dedicated Real-Time Endpoint | `python deploy/sagemaker_deploy.py --role-arn <ARN>` |
+| **Modal** | Serverless GPU hosting that turns off automatically when not in use so you don't waste money | `modal deploy deploy/modal_app.py` |
+| **RunPod** | Rent powerful GPUs (RTX 4090 / A4000) for pennies per hour with serverless workers | `python deploy/runpod_handler.py` |
+| **Kubernetes** | Enterprise container cluster (AWS EKS, Google Cloud GKE) with auto-scaling pods | `kubectl apply -f deploy/k8s-deployment.yaml` |
+| **AWS SageMaker** | Amazon's enterprise AI hosting service with dedicated GPU endpoints | `python deploy/sagemaker_deploy.py --role-arn <ARN>` |
 
 ---
 
