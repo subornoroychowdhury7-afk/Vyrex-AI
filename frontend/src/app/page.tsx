@@ -14,7 +14,7 @@ import {
   BookOpen,
   Compass,
 } from "lucide-react";
-import { Header } from "@/components/Header";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChatMessage, Message } from "@/components/ChatMessage";
 import { ChatHistorySidebar, ChatSession } from "@/components/ChatHistorySidebar";
 
@@ -131,7 +131,7 @@ export default function Home() {
   // Chat History state
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(true);
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -385,17 +385,11 @@ export default function Home() {
   const loopRow2 = (row2Prompts.length > 0 ? [...row2Prompts, ...row2Prompts, ...row2Prompts, ...row2Prompts] : loopRow1).slice(0, 12);
 
   return (
-    <div className="flex flex-col min-h-screen bg-white dark:bg-[#0d0d0d] transition-colors duration-300">
-      {/* Top Header — Clean with Chat History toggle and Theme Toggle ONLY */}
-      <Header
-        onOpenHistory={() => setIsHistoryOpen(true)}
-        historyCount={sessions.length}
-      />
-
-      {/* Slide-out Chat History Drawer */}
+    <div className="flex min-h-screen bg-white dark:bg-[#0d0d0d] transition-colors duration-300">
+      {/* ── Left Side: Chat History (Always Open Sidebar) ── */}
       <ChatHistorySidebar
         isOpen={isHistoryOpen}
-        onClose={() => setIsHistoryOpen(false)}
+        onToggle={() => setIsHistoryOpen(!isHistoryOpen)}
         sessions={sessions}
         currentSessionId={currentSessionId}
         onSelectSession={handleSelectSession}
@@ -404,7 +398,14 @@ export default function Home() {
         onClearAll={handleClearAllHistory}
       />
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-6 flex flex-col justify-between">
+      {/* ── Main Chat Area ── */}
+      <div className="flex-1 flex flex-col min-h-screen relative overflow-x-hidden">
+        {/* Top-Right: Theme Toggle (Dark & Light Mode) */}
+        <div className="absolute top-4 right-4 z-20">
+          <ThemeToggle />
+        </div>
+
+        <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-6 flex flex-col justify-between">
         {messages.length === 0 ? (
           /* ── Welcome Screen matching modern Claude / Gemini / ChatGPT design ── */
           <div className="my-auto py-8 flex flex-col items-center text-center animate-fade-in">
@@ -649,5 +650,6 @@ export default function Home() {
         </div>
       </main>
     </div>
-  );
+  </div>
+);
 }
