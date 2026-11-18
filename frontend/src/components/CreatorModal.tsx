@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { X, Cpu, GraduationCap, Github, ExternalLink, Code2 } from "lucide-react";
+import { X, Cpu, Github, ExternalLink, Code2 } from "lucide-react";
 
 interface CreatorModalProps {
   isOpen: boolean;
@@ -44,10 +44,10 @@ export function CreatorModal({ isOpen, onClose }: CreatorModalProps) {
             </div>
             <div>
               <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/15 uppercase tracking-wider mb-1.5">
-                Project Architect
+                Built with Vyrex AI
               </span>
-              <h2 className="text-2xl font-bold tracking-tight">Suborno Roy Chowdhury</h2>
-              <p className="text-sm text-red-100 mt-0.5">AI/ML Engineer & Generative AI Researcher</p>
+              <h2 className="text-2xl font-bold tracking-tight">Vyrex AI Project</h2>
+              <p className="text-sm text-red-100 mt-0.5">Independent AI/ML Research Project</p>
             </div>
           </div>
         </div>
@@ -55,36 +55,20 @@ export function CreatorModal({ isOpen, onClose }: CreatorModalProps) {
         {/* Body */}
         <div className="p-6 space-y-4 max-h-[65vh] overflow-y-auto">
 
-          {/* Education */}
-          <div className="flex items-start gap-3.5 p-3.5 rounded-xl
-            bg-gray-50 dark:bg-[#1f1f1f]
-            border border-gray-100 dark:border-[#2a2a2a]">
-            <GraduationCap className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
-            <div className="text-sm">
-              <p className="font-semibold text-gray-900 dark:text-white">
-                St. Thomas&apos; College of Engineering & Technology, Kolkata
-              </p>
-              <p className="text-gray-500 dark:text-gray-400 mt-0.5">
-                B.Tech in Artificial Intelligence & Machine Learning (YGPA: 8.71)
-              </p>
-              <p className="text-xs text-red-600 dark:text-red-400 font-medium mt-1">
-                + IIT Kharagpur Certificate in AI for Real-World Applications
-              </p>
-            </div>
-          </div>
-
-          {/* Model Architecture */}
+          {/* Model Info */}
           <div className="flex items-start gap-3.5 p-3.5 rounded-xl
             bg-gray-50 dark:bg-[#1f1f1f]
             border border-gray-100 dark:border-[#2a2a2a]">
             <Cpu className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
             <div className="text-sm">
               <p className="font-semibold text-gray-900 dark:text-white">
-                Vyrex AI • Vyrex Hyperion 3 Architecture
+                Vyrex AI • Vyrex Hyperion 3
               </p>
               <p className="text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
-                Fine-tuned on Qwen3-1.7B using 4-bit NF4 Quantization and QLoRA (Rank 16, Alpha 32).
-                Engineered with a Calibrated Boundary Stop-Logits Processor (+4.8 bias) and 5× weighted end-token loss.
+                An independent conversational AI model fine-tuned using 4-bit NF4 Quantization
+                and QLoRA (Rank 16, Alpha 32) on Qwen3-1.7B. Features a Calibrated Boundary
+                Stop-Logits Processor (+4.8 bias) and 5× weighted end-token loss for clean
+                natural termination.
               </p>
             </div>
           </div>
@@ -95,7 +79,7 @@ export function CreatorModal({ isOpen, onClose }: CreatorModalProps) {
             border border-gray-100 dark:border-[#2a2a2a]">
             <Code2 className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
             <div className="text-sm">
-              <p className="font-semibold text-gray-900 dark:text-white mb-2">Core Engineering Stack</p>
+              <p className="font-semibold text-gray-900 dark:text-white mb-2">Engineering Stack</p>
               <div className="flex flex-wrap gap-1.5">
                 {["Python", "PyTorch", "QLoRA", "FastAPI", "Next.js", "Docker", "ChromaDB", "vLLM"].map((tech) => (
                   <span

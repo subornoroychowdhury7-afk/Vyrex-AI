@@ -83,7 +83,7 @@ async def global_error_handler(request: Request, exc: Exception):
 async def root():
     return {
         "service": "VYREX AI Production API",
-        "creator": "Suborno Roy Chowdhury",
+        "creator": "Vyrex AI Project",
         "docs_url": "/docs",
         "health_url": "/v1/health",
         "models_url": "/v1/models",

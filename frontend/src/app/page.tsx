@@ -229,7 +229,7 @@ export default function Home() {
               calibrated natural termination.
             </p>
             <p className="text-xs text-gray-400 dark:text-gray-500 mb-10">
-              Architected by Suborno Roy Chowdhury
+              Vyrex Hyperion 3 · Independent Conversational Intelligence
             </p>
 
             {/* Starter Cards */}
@@ -374,7 +374,7 @@ export default function Home() {
           </form>
 
           <p className="text-[11px] text-center text-gray-400 dark:text-gray-600 mt-2">
-            Vyrex AI · Vyrex Hyperion 3 · Fine-tuned by Suborno Roy Chowdhury
+            Vyrex AI · Vyrex Hyperion 3 · Independent Conversational Intelligence
           </p>
         </div>
       </main>

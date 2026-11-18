@@ -49,7 +49,7 @@ export function Header({
               </span>
             </div>
             <p className="hidden sm:block text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
-              by Suborno Roy Chowdhury
+              Independent AI Assistant
             </p>
           </div>
         </div>

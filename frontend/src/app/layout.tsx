@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Vyrex AI — Vyrex Hyperion 3",
   description:
-    "Vyrex AI powered by Vyrex Hyperion 3 — an independent conversational AI fine-tuned with 4-bit QLoRA and calibrated natural termination. Architected by Suborno Roy Chowdhury.",
+    "Vyrex AI powered by Vyrex Hyperion 3 — an independent conversational AI fine-tuned with 4-bit QLoRA and calibrated natural termination.",
   icons: {
     icon: "/vyrex-symbol.png",
   },
