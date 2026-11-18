@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "VYREX AI — Production Conversational Intelligence",
+  title: "Vyrex AI — Vyrex Hyperion 3",
   description:
-    "Independent 1.7B conversational assistant fine-tuned with 4-bit QLoRA and calibrated natural termination. Architected by Suborno Roy Chowdhury.",
+    "Vyrex AI powered by Vyrex Hyperion 3 — an independent conversational AI fine-tuned with 4-bit QLoRA and calibrated natural termination. Architected by Suborno Roy Chowdhury.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/vyrex-symbol.png",
   },
 };
 
@@ -23,7 +23,7 @@ export default function RootLayout({
             __html: `
               try {
                 const stored = localStorage.getItem('theme');
-                if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                if (stored === 'dark') {
                   document.documentElement.classList.add('dark');
                 } else {
                   document.documentElement.classList.remove('dark');
@@ -33,7 +33,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#070b14] dark:text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+      <body className="min-h-screen bg-white text-gray-900 dark:bg-[#0d0d0d] dark:text-gray-100 antialiased selection:bg-red-600 selection:text-white">
         {children}
       </body>
     </html>

@@ -1,6 +1,7 @@
 "use client";
 
-import { Sparkles, Sliders, Info, Github } from "lucide-react";
+import Image from "next/image";
+import { Sliders, Info, Github } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 interface HeaderProps {
@@ -17,85 +18,108 @@ export function Header({
   apiUrl,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/70 dark:bg-[#070b14]/70 border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-md
+      bg-white/90 dark:bg-[#0d0d0d]/90
+      border-b border-gray-200 dark:border-[#2a2a2a]
+      shadow-sm dark:shadow-none
+      transition-colors duration-300">
       <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo and Brand */}
+
+        {/* ── Logo + Brand ── */}
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/25">
-            <Sparkles className="w-5 h-5" />
+          <div className="relative w-10 h-10 flex-shrink-0">
+            <Image
+              src="/vyrex-symbol.png"
+              alt="Vyrex AI"
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-extrabold text-base tracking-tight text-slate-900 dark:text-slate-100">
-                VYREX AI
+              <h1 className="font-extrabold text-base tracking-tight text-gray-900 dark:text-white">
+                Vyrex <span className="text-red-600 dark:text-red-500">AI</span>
               </h1>
-              <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/40">
+              <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold
+                bg-red-50 dark:bg-red-950/40
+                text-red-700 dark:text-red-400
+                border border-red-200 dark:border-red-900/50">
                 Vyrex Hyperion 3
               </span>
             </div>
-            <p className="hidden sm:block text-[11px] text-slate-500 dark:text-slate-400">
-              Architected by Suborno Roy Chowdhury
+            <p className="hidden sm:block text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+              by Suborno Roy Chowdhury
             </p>
           </div>
         </div>
 
-        {/* Right Action Icons */}
+        {/* ── Right Controls ── */}
         <div className="flex items-center gap-2">
-          {/* Status Badge */}
+
+          {/* Status dot */}
           <div
             title={`Backend: ${apiUrl}`}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-300"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
+              bg-gray-100 dark:bg-[#1f1f1f]
+              border border-gray-200 dark:border-[#2a2a2a]
+              text-gray-600 dark:text-gray-300"
           >
-            <span
-              className={`w-2 h-2 rounded-full ${
-                status === "connected"
-                  ? "bg-emerald-500 shadow-sm shadow-emerald-500 animate-pulse"
-                  : status === "connecting"
-                  ? "bg-amber-400 animate-pulse"
-                  : "bg-rose-500"
-              }`}
-            />
-            <span className="text-[11px] capitalize hidden md:inline">
-              {status}
-            </span>
+            <span className={`w-2 h-2 rounded-full ${
+              status === "connected"
+                ? "bg-green-500 shadow-sm shadow-green-500 animate-pulse"
+                : status === "connecting"
+                ? "bg-amber-400 animate-pulse"
+                : "bg-red-500"
+            }`} />
+            <span className="text-[11px] capitalize hidden md:inline">{status}</span>
           </div>
 
-          {/* Creator Info Button */}
+          {/* Creator Info */}
           <button
             onClick={onOpenCreator}
             aria-label="About Creator"
             title="About Creator & Architecture"
             className="flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200
-              bg-white/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700
-              border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-300"
+              bg-white dark:bg-[#1f1f1f]
+              hover:bg-red-50 dark:hover:bg-red-950/30
+              border border-gray-200 dark:border-[#2a2a2a]
+              text-gray-500 dark:text-gray-400
+              hover:text-red-600 dark:hover:text-red-400"
           >
             <Info className="w-4 h-4" />
           </button>
 
-          {/* Settings Button */}
+          {/* Settings */}
           <button
             onClick={onOpenSettings}
-            aria-label="Server Settings"
-            title="Configure Backend URL & Parameters"
+            aria-label="Settings"
+            title="Configure Backend & Parameters"
             className="flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200
-              bg-white/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700
-              border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-300"
+              bg-white dark:bg-[#1f1f1f]
+              hover:bg-red-50 dark:hover:bg-red-950/30
+              border border-gray-200 dark:border-[#2a2a2a]
+              text-gray-500 dark:text-gray-400
+              hover:text-red-600 dark:hover:text-red-400"
           >
             <Sliders className="w-4 h-4" />
           </button>
 
-          {/* Dark / Bright Mode Toggle */}
+          {/* Theme Toggle */}
           <ThemeToggle />
 
-          {/* GitHub Repo Link */}
+          {/* GitHub */}
           <a
             href="https://github.com/subornoroychowdhury7-afk/Vyrex-AI"
             target="_blank"
             rel="noopener noreferrer"
-            title="View Source on GitHub"
+            title="View on GitHub"
             className="flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200
-              bg-white/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700
-              border border-slate-200 dark:border-slate-700/60 text-slate-600 dark:text-slate-300"
+              bg-white dark:bg-[#1f1f1f]
+              hover:bg-red-50 dark:hover:bg-red-950/30
+              border border-gray-200 dark:border-[#2a2a2a]
+              text-gray-500 dark:text-gray-400
+              hover:text-red-600 dark:hover:text-red-400"
           >
             <Github className="w-4 h-4" />
           </a>

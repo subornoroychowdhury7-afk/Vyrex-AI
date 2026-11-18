@@ -1,4 +1,4 @@
-﻿import argparse
+import argparse
 import torch
 from transformers import GenerationConfig, LogitsProcessorList
 from vyrex_1_7b_inference import (

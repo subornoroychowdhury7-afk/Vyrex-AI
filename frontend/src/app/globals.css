@@ -2,14 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ───────────────────────────────────────────
+   BRIGHT MODE  (default) — Red + White
+─────────────────────────────────────────── */
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #ffffff;
+  --surface:    #fafafa;
+  --surface-2:  #f5f5f5;
+  --border:     #e5e5e5;
+  --foreground: #111111;
+  --muted:      #6b7280;
+  --accent:     #dc2626;        /* red-600 */
+  --accent-h:   #b91c1c;        /* red-700 */
+  --accent-soft:#fff1f1;        /* red-50  */
 }
 
+/* ───────────────────────────────────────────
+   DARK MODE — Charcoal + Red
+─────────────────────────────────────────── */
 .dark {
-  --background: #090d16;
-  --foreground: #f8fafc;
+  --background: #0d0d0d;
+  --surface:    #161616;
+  --surface-2:  #1f1f1f;
+  --border:     #2a2a2a;
+  --foreground: #f5f5f5;
+  --muted:      #9ca3af;
+  --accent:     #ef4444;        /* red-500 */
+  --accent-h:   #dc2626;        /* red-600 */
+  --accent-soft:#2a0a0a;        /* dark red tint */
 }
 
 body {
@@ -20,39 +40,47 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+/* ───────── Scrollbar ───────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
+  background: rgba(220, 38, 38, 0.25);
   border-radius: 9999px;
 }
+.dark ::-webkit-scrollbar-thumb { background: rgba(239, 68, 68, 0.2); }
+::-webkit-scrollbar-thumb:hover { background: rgba(220, 38, 38, 0.5); }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
-}
+/* ───────── Range slider accent ───────── */
+input[type="range"] { accent-color: #dc2626; }
+.dark input[type="range"] { accent-color: #ef4444; }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
-}
-
-/* Code block formatting */
+/* ───────── Code blocks ───────── */
 pre {
-  background: #0f172a !important;
-  color: #e2e8f0 !important;
+  background: #1a1a1a !important;
+  color: #f5f5f5 !important;
   padding: 1rem;
   border-radius: 0.75rem;
   overflow-x: auto;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
 
-code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+/* ───────── Animations ───────── */
+@keyframes fadeIn  { from { opacity: 0 }               to { opacity: 1 } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
+.animate-fade-in  { animation: fadeIn  0.25s ease-out; }
+.animate-slide-up { animation: slideUp 0.3s  ease-out; }
+
+/* ───────── Red glow button helpers ───────── */
+.btn-red {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 0.75rem;
+  transition: background 0.15s, box-shadow 0.15s;
 }
+.btn-red:hover {
+  background: var(--accent-h);
+  box-shadow: 0 0 16px rgba(220,38,38,0.4);
+}
+.btn-red:disabled { opacity: 0.35; }
+
