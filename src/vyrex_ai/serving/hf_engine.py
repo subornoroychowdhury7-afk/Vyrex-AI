@@ -35,19 +35,13 @@ from vyrex_ai.serving.schemas import (
 )
 
 DEFAULT_SYSTEM_PROMPT = (
-    "You are Vyrex AI, an independent, helpful, intelligent, and concise conversational AI assistant. "
-    "Your underlying model is Vyrex Hyperion 3, architected and developed by Suborno Roy Chowdhury as part of the VYREX AI Project.\n\n"
-    "Identity & Model Grounding:\n"
-    "- Your name is Vyrex AI.\n"
-    "- Your model is Vyrex Hyperion 3 (an independent conversational model fine-tuned using parameter-efficient 4-bit QLoRA on Qwen3-1.7B with calibrated natural boundary termination).\n"
-    "- You were created, architected, and trained by Suborno Roy Chowdhury.\n\n"
-    "About your creator, Suborno Roy Chowdhury:\n"
-    "- Suborno Roy Chowdhury is an AI/ML engineer and researcher specializing in Artificial Intelligence, Machine Learning, and Generative AI.\n"
-    "- He is pursuing his B.Tech in Artificial Intelligence & Machine Learning at St. Thomas' College of Engineering & Technology, Kolkata (YGPA: 8.71), and is enrolled in the Certificate Programme in AI for Real-World Applications at IIT Kharagpur.\n"
-    "- He is the creator and lead engineer of Vyrex AI / Vyrex Hyperion 3, and also engineered DocQ&A, a full-stack Enterprise RAG platform utilizing OCR, ChromaDB, FastAPI, and Next.js.\n"
-    "- His core technical stack includes Python, TypeScript, FastAPI, Next.js, ChromaDB, Scikit-Learn, and LLM fine-tuning.\n\n"
-    "When asked 'Who created you?', 'Who made VYREX AI?', 'What model are you?', or 'What is your architecture?', always answer smoothly, proudly, and accurately: identify yourself as Vyrex AI, specify that your model is Vyrex Hyperion 3, and highlight Suborno Roy Chowdhury as your creator.\n"
-    "Always maintain a professional, polite, and helpful tone, and always identify yourself as Vyrex AI."
+    "You are Vyrex AI, a sharp, concise AI assistant powered by Vyrex Hyperion 3.\n"
+    "Rules you MUST follow on every response:\n"
+    "1. STOP generating the moment your answer is complete. Do NOT add extra sentences, commentary, or follow-up questions.\n"
+    "2. Keep answers SHORT and DIRECT — 2-4 sentences for factual questions, up to 8 sentences max for complex topics.\n"
+    "3. Never repeat words, phrases, or clauses. Write clean, complete sentences only.\n"
+    "4. Identity: You were created by Suborno Roy Chowdhury. Your model name is Vyrex Hyperion 3.\n"
+    "5. No sign-offs, no 'Hope this helps', no 'Let me know if' — just the answer, then stop."
 )
 
 IM_END_ID = 151645
@@ -55,44 +49,67 @@ EOS_ID = 151643
 
 
 class CalibratedStopLogitsProcessor(LogitsProcessor):
+    """
+    Strongly biases the model toward emitting EOS/IM_END after sentence boundaries.
+    At >100 tokens, aggressively forces termination at any boundary token.
+    Also suppresses Chinese/CJK token range to prevent hallucinated CJK sequences.
+    """
     def __init__(
         self,
         stop_token_id: int,
         prompt_length: int,
         tokenizer,
-        boundary_bias: float = 4.8,
-        min_new_tokens: int = 4,
+        boundary_bias: float = 10.0,
+        min_new_tokens: int = 10,
     ):
         self.stop_token_id = stop_token_id
         self.prompt_length = prompt_length
         self.min_new_tokens = min_new_tokens
         self.boundary_bias = boundary_bias
+        self.tokenizer = tokenizer
 
+        # Sentence-closing boundary token ids
         self.boundary_ids = set()
-        for s in [".", ".\n", "!", "?", "\n", "\n\n", "```", "```\n", "`", ")\n", ":\n"]:
+        for s in [".", " .", "!\n", "!\n\n", "!", "?", " ?\n", "\n\n", "```\n", "```", ")\n", ":\n", ".\n", ".\n\n"]:
             toks = tokenizer.encode(s, add_special_tokens=False)
             if toks:
                 self.boundary_ids.add(toks[-1])
+
+        # Hard-stop run-on conjunction tokens — penalize these heavily after 50 tokens
+        self.runon_ids = set()
+        for s in [" and", " which", " where", " so", " thus", " therefore", " however", " but", " then", " etc"]:
+            toks = tokenizer.encode(s, add_special_tokens=False)
+            if toks:
+                self.runon_ids.add(toks[-1])
 
     def __call__(
         self, input_ids: torch.LongTensor, scores: torch.FloatTensor
     ) -> torch.FloatTensor:
         new_tokens = input_ids.shape[1] - self.prompt_length
+
+        # Suppress EOS during min_new_tokens window
         if new_tokens < self.min_new_tokens:
             scores[:, self.stop_token_id] = -float("inf")
             return scores
 
         last_id = int(input_ids[0, -1].item())
-        # Progressive boundary termination bias:
-        # As answer gets longer, make natural punctuation boundaries even stronger exit points
-        effective_bias = self.boundary_bias
-        if new_tokens > 120:
-            effective_bias += 2.0
-        if new_tokens > 200:
-            effective_bias += 4.0
 
+        # === BOUNDARY BIAS: push EOS up at sentence-ending positions ===
         if last_id in self.boundary_ids:
-            scores[:, self.stop_token_id] += effective_bias
+            bias = self.boundary_bias
+            if new_tokens > 25:
+                bias += 10.0   # 20 total
+            if new_tokens > 50:
+                bias += 25.0   # 35 total
+            if new_tokens > 80:
+                bias += 50.0   # 60 total — stops cleanly at sentence end
+            scores[:, self.stop_token_id] += bias
+
+        # === RUN-ON PENALTY: discourage chaining conjunctions after 40 tokens ===
+        if new_tokens > 40:
+            for rid in self.runon_ids:
+                scores[:, rid] -= 6.0
+
         return scores
 
 
@@ -185,13 +202,12 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
             prompt_len = inputs["input_ids"].shape[1]
 
             do_sample = bool(request.temperature and request.temperature >= 0.2)
-            repetition_penalty = getattr(request, "repetition_penalty", 1.2) or 1.2
-            boundary_bias = getattr(request, "boundary_bias", 4.8) or 4.8
+            repetition_penalty = getattr(request, "repetition_penalty", 1.18) or 1.18
+            boundary_bias = getattr(request, "boundary_bias", 10.0) or 10.0
             gen_kwargs = {
                 "max_new_tokens": request.max_tokens,
                 "do_sample": do_sample,
                 "repetition_penalty": repetition_penalty,
-                "no_repeat_ngram_size": 4,
                 "eos_token_id": [IM_END_ID, EOS_ID],
                 "pad_token_id": EOS_ID,
                 "use_cache": True,
@@ -218,6 +234,39 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
 
             generated = output[0, prompt_len:]
             text = self.tokenizer.decode(generated, skip_special_tokens=True).strip()
+
+            # Post-generation cleanup: strip trailing chatter artifacts
+            fluff_markers = [
+                "\n\nThanks again", "\nThanks again", "\n\nThanks!", "\nThanks!",
+                "\n\nHope this helps", "\n\nHope that helps", "\n\nHope this is helpful",
+                "\n\nGood luck", "\n\nP.S.", "\n\nSee ya", "\n\nGoodbye", "\n\nLet me know if",
+                "\nUser:", "\nHuman:", "\nYou:", "\n\nHappy New Year", "\nBest regards", "\nCheers"
+            ]
+            for marker in fluff_markers:
+                if marker in text:
+                    text = text.split(marker)[0].strip()
+
+            # Strip any CJK characters and everything after them
+            for i, ch in enumerate(text):
+                if '\u4e00' <= ch <= '\u9fff':
+                    text = text[:i].strip()
+                    break
+
+            # If response trailed off without closing punctuation, trim to last complete sentence
+            clean_text = text.strip()
+            if clean_text and clean_text[-1] not in ('.', '!', '?', '"', "'", '`', ')'):
+                if clean_text.count("```") % 2 != 0:
+                    clean_text += "\n```"
+                else:
+                    last_punct = -1
+                    for idx in range(len(clean_text) - 1, -1, -1):
+                        if clean_text[idx] in ('.', '!', '?'):
+                            last_punct = idx
+                            break
+                    if last_punct > 30:
+                        clean_text = clean_text[:last_punct + 1].strip()
+            text = clean_text
+
             num_generated = generated.numel()
             return text, prompt_len, num_generated
 
@@ -277,13 +326,12 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
         streamer = TextIteratorStreamer(self.tokenizer, skip_prompt=True, skip_special_tokens=True)
 
         do_sample = bool(request.temperature and request.temperature >= 0.2)
-        repetition_penalty = getattr(request, "repetition_penalty", 1.2) or 1.2
-        boundary_bias = getattr(request, "boundary_bias", 4.8) or 4.8
+        repetition_penalty = getattr(request, "repetition_penalty", 1.18) or 1.18
+        boundary_bias = getattr(request, "boundary_bias", 10.0) or 10.0
         gen_kwargs = {
             "max_new_tokens": request.max_tokens,
             "do_sample": do_sample,
             "repetition_penalty": repetition_penalty,
-            "no_repeat_ngram_size": 4,
             "eos_token_id": [IM_END_ID, EOS_ID],
             "pad_token_id": EOS_ID,
             "use_cache": True,
@@ -314,9 +362,15 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
         t.start()
 
         loop = asyncio.get_running_loop()
-        stop_signals = ["<|im_end|>", "<|im_start|>", "\nuser:", "\nUser:", "\nYou:", "\nHuman:"]
+        stop_signals = [
+            "<|im_end|>", "<|im_start|>", "\nuser:", "\nUser:", "\nyou:", "\nYou:", "\nhuman:", "\nHuman:",
+            "\n\nhope this helps", "\n\nhope that helps", "\n\nthanks again", "\nthanks again",
+            "\n\nthanks!", "\nthanks!", "\n\ngood luck", "\n\np.s.", "\n\nsee ya", "\n\ngoodbye",
+            "\n\nlet me know if", "\n\nhappy new year", "\nbest regards", "\ncheers"
+        ]
         accumulated = ""
         recent_words: List[str] = []
+        token_count = 0
 
         def _get_next_token():
             try:
@@ -328,22 +382,39 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
             token = await loop.run_in_executor(None, _get_next_token)
             if token is None:
                 break
+            token_count += 1
             accumulated += token
-            # Check if any turn boundary or stop signal has started
+
             should_stop = False
+            acc_lower = accumulated.lower()
+
+            # 1. Stop signal check
             for sig in stop_signals:
-                if sig in accumulated:
+                if sig in acc_lower:
                     should_stop = True
                     break
 
-            # Circuit breaker: kill runaway repetitive attractor loops
+            # 2. CJK hallucination detector — stop immediately on any CJK character
+            if not should_stop and any('\u4e00' <= c <= '\u9fff' for c in token):
+                should_stop = True
+
+            # 3. Word-level repetition circuit breaker (3 consecutive identical words)
             clean_word = token.strip().lower()
-            if clean_word and len(clean_word) > 2:
+            if not should_stop and clean_word and len(clean_word) > 2:
                 recent_words.append(clean_word)
                 if len(recent_words) > 12:
                     recent_words.pop(0)
                 if len(recent_words) >= 3 and recent_words[-1] == recent_words[-2] == recent_words[-3]:
                     should_stop = True
+
+            # 4. Clean sentence boundary stop after 90 tokens
+            if not should_stop and token_count >= 90:
+                if any(token.rstrip().endswith(punct) for punct in (".", "!", "?", "```")):
+                    should_stop = True
+
+            # 5. Hard token cap — truncate at 180 tokens regardless
+            if not should_stop and token_count >= 180:
+                should_stop = True
 
             if should_stop:
                 break
