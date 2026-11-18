@@ -24,7 +24,10 @@ from vyrex_ai.serving.schemas import (
     ChatMessage,
 )
 from vyrex_ai.serving.hf_engine import HuggingFaceQLoRAEngine
-from vyrex_ai.serving.vllm_engine import VLLMInferenceEngine
+try:
+    from vyrex_ai.serving.vllm_engine import VLLMInferenceEngine
+except ImportError:
+    VLLMInferenceEngine = None  # vllm not installed (e.g. on Modal HF-only deploy)
 from vyrex_ai.serving.engine_base import BaseInferenceEngine
 
 # Global engine instance
@@ -37,7 +40,11 @@ async def lifespan(app: FastAPI):
     global engine
     print(f"[*] Starting VYREX AI Production API Server (Backend: {BACKEND_TYPE.upper()})...")
     if BACKEND_TYPE == "vllm":
-        engine = VLLMInferenceEngine()
+        if VLLMInferenceEngine is None:
+            print("[!] vllm not installed — falling back to HF engine")
+            engine = HuggingFaceQLoRAEngine()
+        else:
+            engine = VLLMInferenceEngine()
     else:
         engine = HuggingFaceQLoRAEngine()
 

@@ -32,4 +32,4 @@ FALLBACK_API_KEY = (
     os.getenv("FALLBACK_API_KEY") or os.getenv("GROQ_API_KEY") or ""
 ).strip().strip('"').strip("'")
 FALLBACK_API_BASE = os.getenv("FALLBACK_API_BASE", "https://api.groq.com/openai/v1").strip().rstrip("/")
-FALLBACK_MODEL = os.getenv("FALLBACK_MODEL", "llama-3.1-8b-instant").strip()
+FALLBACK_MODEL = os.getenv("FALLBACK_MODEL", "llama3-8b-8192").strip()
