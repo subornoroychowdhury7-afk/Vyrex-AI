@@ -35,6 +35,7 @@ VYREX AI is an independent, locally-running conversational AI assistant. It can 
 - [How to Install It](#how-to-install-it)
 - [💬 How to Chat With VYREX AI (Interactive Terminal)](#-how-to-chat-with-vyrex-ai-interactive-terminal)
 - [⚡ How to Run a Single Prompt](#-how-to-run-a-single-prompt)
+- [🌐 Full-Stack Web App: Vercel Frontend & Render Backend](#-full-stack-web-app-vercel-frontend--render-backend)
 - [🚀 Production Serving: OpenAI-Compatible REST API](#-production-serving-openai-compatible-rest-api)
 - [🐳 Docker & Containerization (Optional)](#-docker--containerization-optional)
 - [🏎️ Turbocharged Inference with vLLM](#️-turbocharged-inference-with-vllm)
@@ -329,6 +330,57 @@ If you just want a quick answer to a single question without opening a full chat
 ```powershell
 .\.venv\Scripts\python scripts/pretrained/vyrex_1_7b_inference.py --prompt "What is machine learning?"
 ```
+
+---
+
+## 🌐 Full-Stack Web App: Vercel Frontend & Render Backend
+
+VYREX AI includes a complete full-stack web architecture split into two dedicated, production-ready folders:
+* **`frontend/`** — Built with **Next.js 14**, **Tailwind CSS**, and **Lucide Icons** with full **Dark Mode & Bright Mode** toggling, token streaming, and interactive settings. Pre-configured for instant **Vercel** deployment.
+* **`backend/`** — Asynchronous **FastAPI** REST microservice with CORS, SSE streaming, and health checks. Pre-configured for **Render** (Free & Paid tiers) with automatic zero-crash fallback and GPU auto-detection.
+
+```
+VYREX AI FULL-STACK ARCHITECTURE
+┌───────────────────────────────┐          ┌───────────────────────────────┐
+│     FRONTEND (Vercel)         │  HTTPS   │      BACKEND (Render)         │
+│  - Next.js 14 (App Router)    │ ───────> │  - FastAPI (Python 3.11)      │
+│  - Dark & Bright Mode Toggle  │   SSE    │  - OpenAI /v1/chat API        │
+│  - Live Token Streaming (SSE) │ <─────── │  - Multi-Mode Inference       │
+│  - Settings & Creator Modals  │          │  - Native CORS for Vercel     │
+└───────────────────────────────┘          └───────────────────────────────┘
+```
+
+### 1. Deploy the Backend on Render
+1. Go to [Render Dashboard](https://dashboard.render.com) and click **New +** -> **Web Service**.
+2. Connect your GitHub repository (`Vyrex-AI`).
+3. Set **Root Directory** to `backend`.
+4. Render will auto-detect `requirements.txt` and start with `uvicorn main:app --host 0.0.0.0 --port $PORT`.
+5. Your live backend will be at: `https://your-vyrex-backend.onrender.com`.
+
+### 2. Deploy the Frontend on Vercel
+1. Go to [Vercel](https://vercel.com) and click **Add New...** -> **Project**.
+2. Import your GitHub repository (`Vyrex-AI`).
+3. Set **Root Directory** to `frontend` (⚠️ **Important!**).
+4. Add the Environment Variable:
+   - `NEXT_PUBLIC_API_URL` = `https://your-vyrex-backend.onrender.com`
+5. Click **Deploy**. Your website is live worldwide with real-time AI streaming!
+
+### 3. Run Both Locally for Development
+
+**Terminal 1 (Backend):**
+```powershell
+cd backend
+python -m pip install -r requirements.txt
+python main.py
+```
+
+**Terminal 2 (Frontend):**
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser!
 
 ---
 
