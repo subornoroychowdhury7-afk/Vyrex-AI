@@ -29,8 +29,8 @@ export function Header({
               <h1 className="font-extrabold text-base tracking-tight text-slate-900 dark:text-slate-100">
                 VYREX AI
               </h1>
-              <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/40">
-                Qwen3-1.7B • QLoRA V3
+              <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/40">
+                Vyrex Hyperion 3
               </span>
             </div>
             <p className="hidden sm:block text-[11px] text-slate-500 dark:text-slate-400">

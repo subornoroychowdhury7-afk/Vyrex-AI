@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Send, Square, Trash2, Sparkles, Terminal, Code2, Cpu, ShieldCheck } from "lucide-react";
+import { ArrowUp, Plus, Square, Trash2, Sparkles, Terminal, Code2, Cpu } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ChatMessage, Message } from "@/components/ChatMessage";
 import { SettingsModal } from "@/components/SettingsModal";
@@ -124,7 +124,7 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         signal: controller.signal,
         body: JSON.stringify({
-          model: "vyrex-ai-1.7b",
+          model: "Vyrex Hyperion 3",
           messages: conversationHistory,
           temperature,
           max_tokens: maxTokens,
@@ -249,7 +249,7 @@ export default function Home() {
             </h2>
 
             <p className="max-w-xl text-sm sm:text-base text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-              An independent conversational AI assistant fine-tuned on Qwen3-1.7B with 4-bit QLoRA and calibrated natural termination.
+              Powered by <span className="font-semibold text-slate-800 dark:text-slate-200">Vyrex Hyperion 3</span> — an independent conversational AI fine-tuned with 4-bit QLoRA and calibrated natural termination.
             </p>
 
             {/* Quick Starter Cards */}
@@ -287,69 +287,89 @@ export default function Home() {
 
         {/* Input Bar Section */}
         <div className="sticky bottom-4 z-20 mt-auto">
-          {/* Action Chips */}
-          {messages.length > 0 && (
-            <div className="flex justify-between items-center mb-2 px-1">
-              <button
-                onClick={handleClearHistory}
-                className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-rose-500 transition-colors py-1 px-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                Clear Chat
-              </button>
-              <span className="text-[11px] text-slate-400 font-mono">
-                {messages.length} exchanges
-              </span>
-            </div>
-          )}
-
-          {/* Form Input */}
+          {/* Form Input Card matching Claude layout */}
           <form
             onSubmit={handleSubmit}
-            className="relative flex items-center rounded-2xl bg-white dark:bg-slate-900/95 
-              border border-slate-300/80 dark:border-slate-700/80 shadow-lg shadow-slate-200/50 dark:shadow-none 
-              focus-within:border-indigo-500 dark:focus-within:border-indigo-500 transition-all p-1.5"
+            className="relative rounded-2xl bg-white dark:bg-[#18191e] border border-slate-200/90 dark:border-slate-800 
+              shadow-lg shadow-slate-200/40 dark:shadow-black/20 focus-within:border-indigo-500/70 dark:focus-within:border-indigo-500/60 
+              transition-all overflow-hidden"
           >
-            <textarea
-              rows={1}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit();
-                }
-              }}
-              placeholder="Message VYREX AI... (Press Enter to send)"
-              className="flex-1 max-h-32 min-h-[44px] py-2.5 px-3 text-sm bg-transparent text-slate-900 dark:text-slate-100 
-                placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none resize-none leading-relaxed"
-            />
+            {/* Top Textarea */}
+            <div className="px-4 pt-3.5 pb-1">
+              <textarea
+                rows={2}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit();
+                  }
+                }}
+                placeholder="How can I help you today?"
+                className="w-full max-h-40 min-h-[50px] bg-transparent text-slate-900 dark:text-slate-100 
+                  placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none resize-none leading-relaxed text-sm sm:text-base"
+              />
+            </div>
 
-            <div className="flex items-center gap-1.5 pr-1">
-              {isLoading ? (
+            {/* Bottom Toolbar Row */}
+            <div className="flex items-center justify-between px-3.5 pb-2.5 pt-1">
+              {/* Left Action Controls */}
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
-                  onClick={handleStop}
-                  className="flex items-center justify-center w-9 h-9 rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-sm transition-colors"
-                  title="Stop generating"
+                  title="Add prompt / Attachment"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors"
                 >
-                  <Square className="w-4 h-4 fill-white" />
+                  <Plus className="w-4 h-4" />
                 </button>
-              ) : (
-                <button
-                  type="submit"
-                  disabled={!input.trim()}
-                  className="flex items-center justify-center w-9 h-9 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:hover:bg-indigo-600 text-white shadow-sm transition-all"
-                  title="Send message"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              )}
+                <div className="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200/60 dark:border-slate-700/50">
+                  Chat
+                </div>
+                {messages.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleClearHistory}
+                    title="Clear conversation"
+                    className="flex items-center gap-1 px-2 py-1 text-xs text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Clear</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Right: Model Name & Send / Stop Button */}
+              <div className="flex items-center gap-3">
+                <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 select-none cursor-default tracking-tight">
+                  Vyrex Hyperion 3
+                </span>
+
+                {isLoading ? (
+                  <button
+                    type="button"
+                    onClick={handleStop}
+                    className="flex items-center justify-center w-8 h-8 rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-sm transition-colors"
+                    title="Stop generation"
+                  >
+                    <Square className="w-3.5 h-3.5 fill-white" />
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={!input.trim()}
+                    className="flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-30 disabled:hover:bg-indigo-600 text-white shadow-sm transition-all"
+                    title="Send message"
+                  >
+                    <ArrowUp className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             </div>
           </form>
 
           <p className="text-[11px] text-center text-slate-400 dark:text-slate-500 mt-2">
-            VYREX AI runs on Qwen3-1.7B with calibrated natural termination. Built by Suborno Roy Chowdhury.
+            Vyrex AI • Vyrex Hyperion 3. Fine-tuned with calibrated natural boundary termination. Architected by Suborno Roy Chowdhury.
           </p>
         </div>
       </main>

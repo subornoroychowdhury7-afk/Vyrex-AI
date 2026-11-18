@@ -97,7 +97,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
           <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-            {isUser ? "You" : "VYREX AI"}
+            {isUser ? "You" : "Vyrex AI"}
           </span>
           <span className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
             {message.timestamp}

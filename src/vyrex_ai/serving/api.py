@@ -121,8 +121,9 @@ async def health():
 async def list_models():
     return ModelListResponse(
         data=[
+            ModelCard(id="Vyrex Hyperion 3"),
+            ModelCard(id="vyrex-hyperion-3"),
             ModelCard(id="vyrex-ai-1.7b"),
-            ModelCard(id="qwen3-1.7b-vyrex-v3"),
         ]
     )
 

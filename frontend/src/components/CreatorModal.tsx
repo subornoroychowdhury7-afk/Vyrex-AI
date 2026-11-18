@@ -60,10 +60,10 @@ export function CreatorModal({ isOpen, onClose }: CreatorModalProps) {
             <Cpu className="w-5 h-5 text-purple-600 dark:text-purple-400 mt-0.5 flex-shrink-0" />
             <div className="text-sm">
               <p className="font-semibold text-slate-900 dark:text-slate-100">
-                VYREX AI Architecture
+                Vyrex AI • Vyrex Hyperion 3 Architecture
               </p>
               <p className="text-slate-600 dark:text-slate-400 mt-0.5 leading-relaxed">
-                Fine-tuned on Qwen3-1.7B utilizing 4-bit NF4 Quantization and QLoRA (Rank 16, Alpha 32).
+                Powered by Vyrex Hyperion 3, fine-tuned on Qwen3-1.7B utilizing 4-bit NF4 Quantization and QLoRA (Rank 16, Alpha 32).
                 Engineered with a Calibrated Boundary Stop-Logits Processor (+4.8 bias) and 5× weighted end-token loss.
               </p>
             </div>

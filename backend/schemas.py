@@ -15,13 +15,15 @@ class ChatMessage(BaseModel):
 
 
 class ChatCompletionRequest(BaseModel):
-    model: str = Field(default="vyrex-ai-1.7b", description="Model identifier")
+    model: str = Field(default="Vyrex Hyperion 3", description="Model identifier")
     messages: List[ChatMessage] = Field(..., description="List of messages in conversation")
     temperature: Optional[float] = Field(default=0.7, ge=0.0, le=2.0)
     top_p: Optional[float] = Field(default=0.9, ge=0.0, le=1.0)
     max_tokens: Optional[int] = Field(default=512, ge=1, le=4096)
     stream: Optional[bool] = Field(default=False, description="Whether to stream response chunks via SSE")
     stop: Optional[Union[str, List[str]]] = Field(default=None, description="Optional stop sequences")
+    repetition_penalty: Optional[float] = Field(default=1.1, ge=1.0, le=2.0)
+    boundary_bias: Optional[float] = Field(default=4.8, description="VYREX calibrated stop boundary bias")
 
 
 class UsageInfo(BaseModel):
@@ -40,7 +42,7 @@ class ChatCompletionResponse(BaseModel):
     id: str = Field(default_factory=lambda: f"chatcmpl-{uuid.uuid4().hex[:12]}")
     object: str = "chat.completion"
     created: int = Field(default_factory=lambda: int(time.time()))
-    model: str = "vyrex-ai-1.7b"
+    model: str = "Vyrex Hyperion 3"
     choices: List[ChatCompletionChoice]
     usage: UsageInfo
 
@@ -60,7 +62,7 @@ class ChatCompletionChunk(BaseModel):
     id: str = Field(default_factory=lambda: f"chatcmpl-{uuid.uuid4().hex[:12]}")
     object: str = "chat.completion.chunk"
     created: int = Field(default_factory=lambda: int(time.time()))
-    model: str = "vyrex-ai-1.7b"
+    model: str = "Vyrex Hyperion 3"
     choices: List[ChatCompletionChunkChoice]
 
 
@@ -79,7 +81,7 @@ class ModelListResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: str = "healthy"
     version: str = "1.0.0"
-    model_name: str = "vyrex-ai-1.7b"
+    model_name: str = "Vyrex Hyperion 3"
     backend_mode: str
     device: str
     uptime_seconds: float
