@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import {
   Plus,
   MessageSquare,
@@ -87,52 +86,23 @@ export function ChatHistorySidebar({
         border-r border-gray-200 dark:border-[#242428]
         transition-all duration-300 z-30"
     >
-      {/* ── Top Header: Brand + Collapse Toggle ── */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200/80 dark:border-[#242428]">
-        <div className="flex items-center gap-2.5">
-          <div className="relative w-7 h-7 flex-shrink-0">
-            <Image
-              src="/vyrex-symbol.png"
-              alt="Vyrex AI"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-sm tracking-tight text-gray-900 dark:text-white">
-                Vyrex <span className="text-red-600 dark:text-red-500">AI</span>
-              </span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-red-100/70 dark:bg-red-950/40 text-red-700 dark:text-red-400 font-semibold">
-                {sessions.length}
-              </span>
-            </div>
-            <p className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
-              Vyrex Hyperion 3
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={onToggle}
-          className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200/60 dark:hover:bg-[#1e1e24] transition-colors"
-          title="Collapse sidebar"
-          aria-label="Collapse sidebar"
-        >
-          <PanelLeftClose className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* ── Action: New Chat Button ── */}
-      <div className="p-3 border-b border-gray-200/60 dark:border-[#242428]">
+      {/* ── Top Row: New Chat + Collapse Toggle ── */}
+      <div className="p-3 border-b border-gray-200/60 dark:border-[#242428] flex items-center gap-2">
         <button
           onClick={onNewChat}
-          className="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-white
+          className="flex-1 flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-white
             bg-red-600 hover:bg-red-700 shadow-sm hover:shadow-red-500/25 transition-all"
         >
           <Plus className="w-4 h-4" />
           <span>New Chat</span>
+        </button>
+        <button
+          onClick={onToggle}
+          className="p-2.5 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200/60 dark:hover:bg-[#1e1e24] border border-gray-200/80 dark:border-[#2a2a2a] transition-colors"
+          title="Collapse sidebar"
+          aria-label="Collapse sidebar"
+        >
+          <PanelLeftClose className="w-4 h-4" />
         </button>
       </div>
 
