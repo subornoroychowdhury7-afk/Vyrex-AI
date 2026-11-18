@@ -25,9 +25,11 @@ ALLOWED_ORIGINS = os.getenv(
 ).split(",")
 
 # Remote GPU Worker (Optional: if user connects Render CPU to Modal/RunPod or local tunnel)
-REMOTE_GPU_URL = os.getenv("REMOTE_GPU_URL", "")
+REMOTE_GPU_URL = os.getenv("REMOTE_GPU_URL", "").strip().strip('"').strip("'")
 
 # Upstream Fallback API Key (Optional: Groq/OpenRouter/HuggingFace API key if running in pure serverless mode)
-FALLBACK_API_KEY = os.getenv("FALLBACK_API_KEY", "")
-FALLBACK_API_BASE = os.getenv("FALLBACK_API_BASE", "https://api.groq.com/openai/v1")
-FALLBACK_MODEL = os.getenv("FALLBACK_MODEL", "llama-3.1-8b-instant")
+FALLBACK_API_KEY = (
+    os.getenv("FALLBACK_API_KEY") or os.getenv("GROQ_API_KEY") or ""
+).strip().strip('"').strip("'")
+FALLBACK_API_BASE = os.getenv("FALLBACK_API_BASE", "https://api.groq.com/openai/v1").strip().rstrip("/")
+FALLBACK_MODEL = os.getenv("FALLBACK_MODEL", "llama-3.1-8b-instant").strip()
