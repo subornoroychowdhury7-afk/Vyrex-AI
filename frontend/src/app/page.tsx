@@ -64,13 +64,45 @@ const PROMPT_SUGGESTIONS: PromptItem[] = [
     id: "p5",
     category: "code",
     icon: Code2,
-    title: "API & Backend Design",
-    subtitle: "FastAPI, async & database best practices",
+    title: "FastAPI Backend",
+    subtitle: "Clean async API routes",
     prompt: "Show me an idiomatic async FastAPI route with request validation and clean error handling.",
   },
   {
     id: "p6",
-    category: "discover",
+    category: "brainstorm",
+    icon: Lightbulb,
+    title: "Agentic AI UX",
+    subtitle: "Next-gen user interfaces",
+    prompt: "What are the most exciting UI/UX patterns for modern conversational AI agents?",
+  },
+  {
+    id: "p7",
+    category: "learn",
+    icon: BookOpen,
+    title: "Transformer Attention",
+    subtitle: "Deep learning fundamentals",
+    prompt: "How does multi-head self-attention work mathematically in transformers?",
+  },
+  {
+    id: "p8",
+    category: "write",
+    icon: PenTool,
+    title: "Tech Article Intro",
+    subtitle: "Engaging technical writing",
+    prompt: "Write a compelling introduction for an article about fine-tuning LLMs with QLoRA.",
+  },
+  {
+    id: "p9",
+    category: "code",
+    icon: Code2,
+    title: "Python Algorithm",
+    subtitle: "Clean algorithmic problem solving",
+    prompt: "Write a Python function called find_duplicates(items) preserving original order.",
+  },
+  {
+    id: "p10",
+    category: "learn",
     icon: Sparkles,
     title: "Who Created You?",
     subtitle: "Meet the creator & architecture",
@@ -346,6 +378,12 @@ export default function Home() {
       ? PROMPT_SUGGESTIONS
       : PROMPT_SUGGESTIONS.filter((p) => p.category === activeCategory);
 
+  const row1Prompts = filteredPrompts.filter((_, idx) => idx % 2 === 0);
+  const row2Prompts = filteredPrompts.filter((_, idx) => idx % 2 !== 0);
+
+  const loopRow1 = (row1Prompts.length > 0 ? [...row1Prompts, ...row1Prompts, ...row1Prompts, ...row1Prompts] : [...PROMPT_SUGGESTIONS, ...PROMPT_SUGGESTIONS]).slice(0, 12);
+  const loopRow2 = (row2Prompts.length > 0 ? [...row2Prompts, ...row2Prompts, ...row2Prompts, ...row2Prompts] : loopRow1).slice(0, 12);
+
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-[#0d0d0d] transition-colors duration-300">
       {/* Top Header — Clean with Chat History toggle and Theme Toggle ONLY */}
@@ -417,37 +455,85 @@ export default function Home() {
               })}
             </div>
 
-            {/* Line 5: Interactive & Cool Starter Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl text-left">
-              {filteredPrompts.slice(0, 4).map((card) => {
-                const IconComponent = card.icon;
-                return (
-                  <button
-                    key={card.id}
-                    onClick={() => handleSubmit(undefined, card.prompt)}
-                    className="p-4 rounded-2xl text-left group transition-all duration-200
-                      bg-white dark:bg-[#161616]
-                      border border-gray-200 dark:border-[#2a2a2a]
-                      hover:border-red-500 dark:hover:border-red-600
-                      shadow-sm hover:shadow-lg hover:shadow-red-500/10 hover:-translate-y-0.5"
-                  >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <div className="flex items-center gap-2 text-xs font-bold text-gray-900 dark:text-gray-100 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-                        <div className="w-6 h-6 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center">
-                          <IconComponent className="w-3.5 h-3.5" />
+            {/* Line 5: Floating Prompts Carousel (ChatGPT Style) */}
+            <div className="w-full max-w-4xl overflow-hidden fade-mask-edges py-2 space-y-3">
+              {/* Row 1: Floats Left */}
+              <div className="overflow-hidden">
+                <div className="animate-marquee-left pause-on-hover gap-3">
+                  {loopRow1.map((card, idx) => {
+                    const IconComponent = card.icon;
+                    return (
+                      <button
+                        key={`r1-${card.id}-${idx}`}
+                        onClick={() => handleSubmit(undefined, card.prompt)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all duration-200
+                          bg-white dark:bg-[#161616]
+                          hover:bg-red-50/70 dark:hover:bg-[#201010]
+                          border border-gray-200/90 dark:border-[#262626]
+                          hover:border-red-500/50 dark:hover:border-red-500/50
+                          shadow-sm hover:shadow-md hover:shadow-red-500/10 hover:-translate-y-0.5
+                          flex-shrink-0 cursor-pointer w-[280px] sm:w-[320px] group"
+                      >
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white transition-all">
+                          <IconComponent className="w-4 h-4" />
                         </div>
-                        <span>{card.title}</span>
-                      </div>
-                      <span className="text-[10px] text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                        Ask &rarr;
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
-                      &ldquo;{card.prompt}&rdquo;
-                    </p>
-                  </button>
-                );
-              })}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between mb-0.5">
+                            <span className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                              {card.title}
+                            </span>
+                            <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono uppercase ml-1">
+                              {card.category}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                            {card.prompt}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Row 2: Floats Right */}
+              <div className="overflow-hidden">
+                <div className="animate-marquee-right pause-on-hover gap-3">
+                  {loopRow2.map((card, idx) => {
+                    const IconComponent = card.icon;
+                    return (
+                      <button
+                        key={`r2-${card.id}-${idx}`}
+                        onClick={() => handleSubmit(undefined, card.prompt)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all duration-200
+                          bg-white dark:bg-[#161616]
+                          hover:bg-red-50/70 dark:hover:bg-[#201010]
+                          border border-gray-200/90 dark:border-[#262626]
+                          hover:border-red-500/50 dark:hover:border-red-500/50
+                          shadow-sm hover:shadow-md hover:shadow-red-500/10 hover:-translate-y-0.5
+                          flex-shrink-0 cursor-pointer w-[280px] sm:w-[320px] group"
+                      >
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white transition-all">
+                          <IconComponent className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between mb-0.5">
+                            <span className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                              {card.title}
+                            </span>
+                            <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono uppercase ml-1">
+                              {card.category}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                            {card.prompt}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         ) : (
