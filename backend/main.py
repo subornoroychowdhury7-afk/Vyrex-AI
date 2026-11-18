@@ -12,6 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sse_starlette.sse import EventSourceResponse
 
+import httpx
+
 from schemas import (
     ChatCompletionRequest,
     ChatCompletionResponse,
@@ -20,7 +22,7 @@ from schemas import (
     ModelListResponse,
 )
 from engine import VyrexBackendEngine
-from config import HOST, PORT
+from config import HOST, PORT, FALLBACK_API_KEY, FALLBACK_API_BASE, FALLBACK_MODEL, REMOTE_GPU_URL
 
 engine = VyrexBackendEngine()
 
@@ -120,6 +122,49 @@ async def chat_completions(request: ChatCompletionRequest):
 
     response = await engine.generate(request)
     return response
+
+
+@app.get("/debug/groq")
+async def debug_groq():
+    """Live diagnostic: tests Groq API key directly from this Render instance."""
+    import os
+    key_raw = os.getenv("FALLBACK_API_KEY") or os.getenv("GROQ_API_KEY") or ""
+    key = key_raw.strip().strip('"').strip("'")
+    result = {
+        "key_env_name": "FALLBACK_API_KEY" if os.getenv("FALLBACK_API_KEY") else ("GROQ_API_KEY" if os.getenv("GROQ_API_KEY") else "NOT_SET"),
+        "key_length": len(key),
+        "key_prefix": key[:8] + "..." if len(key) > 8 else "(empty)",
+        "api_base": FALLBACK_API_BASE,
+        "model": FALLBACK_MODEL,
+        "engine_mode": engine.mode,
+        "remote_gpu_url": REMOTE_GPU_URL or "(not set)",
+    }
+    if not key:
+        result["groq_test"] = "SKIP — no API key configured on this Render instance"
+        return result
+    try:
+        headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
+        payload = {
+            "model": FALLBACK_MODEL,
+            "messages": [{"role": "user", "content": "Say: OK"}],
+            "max_tokens": 10,
+            "stream": False,
+        }
+        url = f"{FALLBACK_API_BASE.rstrip('/')}/chat/completions"
+        async with httpx.AsyncClient(timeout=20.0) as client:
+            r = await client.post(url, headers=headers, json=payload)
+            result["groq_http_status"] = r.status_code
+            result["groq_response_body"] = r.text[:600]
+            if r.status_code == 200:
+                data = r.json()
+                content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+                result["groq_content"] = content
+                result["groq_test"] = "PASS" if content else "FAIL — empty content"
+            else:
+                result["groq_test"] = f"FAIL — HTTP {r.status_code}"
+    except Exception as e:
+        result["groq_test"] = f"ERROR — {e}"
+    return result
 
 
 if __name__ == "__main__":
