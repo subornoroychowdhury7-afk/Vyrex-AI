@@ -37,7 +37,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<"connected" | "connecting" | "offline">("connecting");
   const [apiUrl, setApiUrl] = useState<string>("http://localhost:8000");
-  const [temperature, setTemperature] = useState<number>(0.7);
+  const [temperature, setTemperature] = useState<number>(0.0);
   const [maxTokens, setMaxTokens] = useState<number>(512);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCreatorOpen, setIsCreatorOpen] = useState(false);

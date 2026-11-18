@@ -17,7 +17,7 @@ class ChatMessage(BaseModel):
 class ChatCompletionRequest(BaseModel):
     model: str = Field(default="Vyrex Hyperion 3", description="Model identifier")
     messages: List[ChatMessage] = Field(..., description="List of messages in conversation")
-    temperature: Optional[float] = Field(default=0.7, ge=0.0, le=2.0)
+    temperature: Optional[float] = Field(default=0.0, ge=0.0, le=2.0)
     top_p: Optional[float] = Field(default=0.9, ge=0.0, le=1.0)
     max_tokens: Optional[int] = Field(default=512, ge=1, le=4096)
     stream: Optional[bool] = Field(default=False, description="Whether to stream response chunks via SSE")

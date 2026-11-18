@@ -176,7 +176,7 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
             inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
             prompt_len = inputs["input_ids"].shape[1]
 
-            do_sample = (request.temperature or 0.0) > 0.0
+            do_sample = bool(request.temperature and request.temperature >= 0.2)
             repetition_penalty = getattr(request, "repetition_penalty", 1.1) or 1.1
             boundary_bias = getattr(request, "boundary_bias", 4.8) or 4.8
             gen_kwargs = {
@@ -189,7 +189,8 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
             }
             if do_sample:
                 gen_kwargs["temperature"] = request.temperature
-                gen_kwargs["top_p"] = request.top_p
+                gen_kwargs["top_p"] = request.top_p or 0.9
+                gen_kwargs["top_k"] = 50
 
             processor = CalibratedStopLogitsProcessor(
                 stop_token_id=IM_END_ID,
@@ -266,7 +267,7 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
 
         streamer = TextIteratorStreamer(self.tokenizer, skip_prompt=True, skip_special_tokens=True)
 
-        do_sample = (request.temperature or 0.0) > 0.0
+        do_sample = bool(request.temperature and request.temperature >= 0.2)
         repetition_penalty = getattr(request, "repetition_penalty", 1.1) or 1.1
         boundary_bias = getattr(request, "boundary_bias", 4.8) or 4.8
         gen_kwargs = {
@@ -280,7 +281,8 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
         }
         if do_sample:
             gen_kwargs["temperature"] = request.temperature
-            gen_kwargs["top_p"] = request.top_p
+            gen_kwargs["top_p"] = request.top_p or 0.9
+            gen_kwargs["top_k"] = 50
 
         processor = CalibratedStopLogitsProcessor(
             stop_token_id=IM_END_ID,
@@ -302,6 +304,8 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
         t.start()
 
         loop = asyncio.get_running_loop()
+        stop_signals = ["<|im_end|>", "<|im_start|>", "\nuser:", "\nUser:", "\nYou:", "\nHuman:"]
+        accumulated = ""
 
         def _get_next_token():
             try:
@@ -313,6 +317,16 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
             token = await loop.run_in_executor(None, _get_next_token)
             if token is None:
                 break
+            accumulated += token
+            # Check if any turn boundary or stop signal has started
+            should_stop = False
+            for sig in stop_signals:
+                if sig in accumulated:
+                    should_stop = True
+                    break
+            if should_stop:
+                break
+
             if token:
                 yield ChatCompletionChunk(
                     id=stream_id,

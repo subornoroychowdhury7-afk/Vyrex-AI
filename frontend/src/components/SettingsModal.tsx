@@ -159,7 +159,7 @@ export function SettingsModal({
               style={{ accentColor: "#dc2626" }}
             />
             <p className="text-[11px] text-gray-500 dark:text-gray-500 mt-1">
-              Lower = more focused; higher = more creative.
+              0.0 = deterministic & clean (recommended for Vyrex 1.7B); higher = creative.
             </p>
           </div>
 
