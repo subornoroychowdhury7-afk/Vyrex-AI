@@ -2,32 +2,88 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { ArrowUp, Plus, Square, Trash2, Sparkles, Terminal, Code2, Cpu } from "lucide-react";
+import {
+  ArrowUp,
+  Plus,
+  Square,
+  Trash2,
+  Sparkles,
+  Code2,
+  Lightbulb,
+  PenTool,
+  BookOpen,
+  Compass,
+} from "lucide-react";
 import { Header } from "@/components/Header";
 import { ChatMessage, Message } from "@/components/ChatMessage";
 import { ChatHistorySidebar, ChatSession } from "@/components/ChatHistorySidebar";
 
-const STARTER_PROMPTS = [
+interface PromptItem {
+  id: string;
+  category: "brainstorm" | "code" | "write" | "learn" | "discover";
+  icon: any;
+  title: string;
+  subtitle: string;
+  prompt: string;
+}
+
+const PROMPT_SUGGESTIONS: PromptItem[] = [
   {
+    id: "p1",
+    category: "brainstorm",
+    icon: Lightbulb,
+    title: "Brainstorm Ideas",
+    subtitle: "Creative concepts & innovation",
+    prompt: "Give me 5 groundbreaking startup ideas using edge AI for 2026.",
+  },
+  {
+    id: "p2",
+    category: "code",
+    icon: Code2,
+    title: "Code & Architecture",
+    subtitle: "Clean code & backend patterns",
+    prompt: "Write a high-performance Python function with type hints and edge-case tests.",
+  },
+  {
+    id: "p3",
+    category: "write",
+    icon: PenTool,
+    title: "Write & Refine",
+    subtitle: "Compelling copy & executive pitch",
+    prompt: "Draft an engaging and persuasive product launch announcement for an AI platform.",
+  },
+  {
+    id: "p4",
+    category: "learn",
+    icon: BookOpen,
+    title: "Explain & Explore",
+    subtitle: "Intuitive breakdowns of deep topics",
+    prompt: "Explain how neural networks learn and optimize weights using simple, intuitive analogies.",
+  },
+  {
+    id: "p5",
+    category: "code",
+    icon: Code2,
+    title: "API & Backend Design",
+    subtitle: "FastAPI, async & database best practices",
+    prompt: "Show me an idiomatic async FastAPI route with request validation and clean error handling.",
+  },
+  {
+    id: "p6",
+    category: "discover",
     icon: Sparkles,
-    title: "Identity & Architecture",
+    title: "Who Created You?",
+    subtitle: "Meet the creator & architecture",
     prompt: "Who created you and what is your architecture?",
   },
-  {
-    icon: Cpu,
-    title: "4-bit NF4 Quantization",
-    prompt: "Explain how 4-bit NF4 quantization works in exactly two sentences. Do not include an introduction or conclusion.",
-  },
-  {
-    icon: Code2,
-    title: "Python Algorithm",
-    prompt: "Write a Python function called find_duplicates(items) that returns duplicate elements from a list preserving order, without using set(). Include type hints.",
-  },
-  {
-    icon: Terminal,
-    title: "ML Concept",
-    prompt: "What is the difference between supervised and unsupervised learning?",
-  },
+];
+
+const CATEGORIES = [
+  { id: "all", label: "✨ All" },
+  { id: "brainstorm", label: "💡 Brainstorm" },
+  { id: "code", label: "💻 Code" },
+  { id: "write", label: "✍️ Write" },
+  { id: "learn", label: "🔬 Learn" },
 ];
 
 const SESSIONS_STORAGE_KEY = "vyrex_chat_sessions";
@@ -37,6 +93,8 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [apiUrl, setApiUrl] = useState<string>("http://localhost:8000");
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [greeting, setGreeting] = useState<string>("Hello");
 
   // Chat History state
   const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -45,6 +103,14 @@ export default function Home() {
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Time-based greeting like Claude / Gemini
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting("Good morning");
+    else if (hour < 17) setGreeting("Good afternoon");
+    else setGreeting("Good evening");
+  }, []);
 
   // Load API URL & Chat Sessions from localStorage on mount
   useEffect(() => {
@@ -274,6 +340,11 @@ export default function Home() {
 
   const handleStop = () => abortControllerRef.current?.abort();
 
+  const filteredPrompts =
+    activeCategory === "all"
+      ? PROMPT_SUGGESTIONS
+      : PROMPT_SUGGESTIONS.filter((p) => p.category === activeCategory);
+
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-[#0d0d0d] transition-colors duration-300">
       {/* Top Header — Clean with Chat History toggle and Theme Toggle ONLY */}
@@ -296,10 +367,10 @@ export default function Home() {
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-6 flex flex-col justify-between">
         {messages.length === 0 ? (
-          /* ── Welcome Screen ── */
-          <div className="my-auto py-12 flex flex-col items-center text-center animate-fade-in">
+          /* ── Welcome Screen matching modern Claude / Gemini / ChatGPT design ── */
+          <div className="my-auto py-8 flex flex-col items-center text-center animate-fade-in">
             {/* Logo */}
-            <div className="relative w-28 h-28 mb-6 drop-shadow-xl">
+            <div className="relative w-24 h-24 mb-4 drop-shadow-xl hover:scale-105 transition-transform duration-300">
               <Image
                 src="/vyrex-logo.png"
                 alt="Vyrex AI"
@@ -309,37 +380,66 @@ export default function Home() {
               />
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
-              <span className="text-gray-900 dark:text-white">Meet </span>
-              <span className="text-red-600 dark:text-red-500">Vyrex AI</span>
+            {/* Line 1: Kept strictly as Vyrex AI */}
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-2">
+              <span className="text-gray-900 dark:text-white">Vyrex </span>
+              <span className="text-red-600 dark:text-red-500">AI</span>
             </h2>
-            <p className="max-w-lg text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-2 leading-relaxed">
-              Powered by{" "}
-              <span className="font-semibold text-gray-800 dark:text-gray-200">Vyrex Hyperion 3</span>
-              {" "}— an independent conversational AI fine-tuned with 4-bit QLoRA and
-              calibrated natural termination.
-            </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mb-10">
-              Vyrex Hyperion 3 · Independent Conversational Intelligence
+
+            {/* Line 2: Human greeting & question */}
+            <p className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
+              {greeting}, where should we start?
             </p>
 
-            {/* Starter Cards */}
+            {/* Line 3: Friendly subtitle */}
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-md leading-relaxed">
+              Ask anything, brainstorm bold ideas, write clean code, or explore deep concepts.
+            </p>
+
+            {/* Line 4: Interactive category pills */}
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+              {CATEGORIES.map((cat) => {
+                const isActive = activeCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveCategory(cat.id)}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
+                      isActive
+                        ? "bg-red-600 text-white shadow-md shadow-red-500/25 scale-105"
+                        : "bg-gray-100 dark:bg-[#1a1a1e] text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 border border-gray-200 dark:border-[#2a2a2a]"
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Line 5: Interactive & Cool Starter Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl text-left">
-              {STARTER_PROMPTS.map((card, idx) => {
+              {filteredPrompts.slice(0, 4).map((card) => {
                 const IconComponent = card.icon;
                 return (
                   <button
-                    key={idx}
+                    key={card.id}
                     onClick={() => handleSubmit(undefined, card.prompt)}
                     className="p-4 rounded-2xl text-left group transition-all duration-200
                       bg-white dark:bg-[#161616]
                       border border-gray-200 dark:border-[#2a2a2a]
-                      hover:border-red-400 dark:hover:border-red-700
-                      shadow-sm hover:shadow-md hover:shadow-red-500/10"
+                      hover:border-red-500 dark:hover:border-red-600
+                      shadow-sm hover:shadow-lg hover:shadow-red-500/10 hover:-translate-y-0.5"
                   >
-                    <div className="flex items-center gap-2 mb-1.5 text-xs font-semibold text-red-600 dark:text-red-400">
-                      <IconComponent className="w-4 h-4" />
-                      <span>{card.title}</span>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-2 text-xs font-bold text-gray-900 dark:text-gray-100 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                        <div className="w-6 h-6 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center">
+                          <IconComponent className="w-3.5 h-3.5" />
+                        </div>
+                        <span>{card.title}</span>
+                      </div>
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                        Ask &rarr;
+                      </span>
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
                       &ldquo;{card.prompt}&rdquo;
