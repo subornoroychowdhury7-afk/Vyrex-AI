@@ -5,13 +5,12 @@ import Image from "next/image";
 import { ArrowUp, Plus, Square, Trash2, Sparkles, Terminal, Code2, Cpu } from "lucide-react";
 import { Header } from "@/components/Header";
 import { ChatMessage, Message } from "@/components/ChatMessage";
-import { SettingsModal } from "@/components/SettingsModal";
-import { CreatorModal } from "@/components/CreatorModal";
+import { ChatHistorySidebar, ChatSession } from "@/components/ChatHistorySidebar";
 
 const STARTER_PROMPTS = [
   {
     icon: Sparkles,
-    title: "Identity & Creator",
+    title: "Identity & Architecture",
     prompt: "Who created you and what is your architecture?",
   },
   {
@@ -31,41 +30,48 @@ const STARTER_PROMPTS = [
   },
 ];
 
+const SESSIONS_STORAGE_KEY = "vyrex_chat_sessions";
+
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState<"connected" | "connecting" | "offline">("connecting");
   const [apiUrl, setApiUrl] = useState<string>("http://localhost:8000");
-  const [temperature, setTemperature] = useState<number>(0.0);
-  const [maxTokens, setMaxTokens] = useState<number>(512);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isCreatorOpen, setIsCreatorOpen] = useState(false);
+
+  // Chat History state
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Load API URL & Chat Sessions from localStorage on mount
   useEffect(() => {
     const savedUrl = localStorage.getItem("vyrex_api_url");
     const defaultUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-    const targetUrl = savedUrl || defaultUrl;
-    setApiUrl(targetUrl);
-    checkHealth(targetUrl);
+    setApiUrl(savedUrl || defaultUrl);
+
+    try {
+      const savedSessions = localStorage.getItem(SESSIONS_STORAGE_KEY);
+      if (savedSessions) {
+        const parsed = JSON.parse(savedSessions);
+        if (Array.isArray(parsed)) {
+          setSessions(parsed);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load chat history from localStorage:", e);
+    }
   }, []);
 
-  const handleUpdateApiUrl = (newUrl: string) => {
-    setApiUrl(newUrl);
-    localStorage.setItem("vyrex_api_url", newUrl);
-    checkHealth(newUrl);
-  };
-
-  const checkHealth = async (url: string) => {
-    setStatus("connecting");
+  // Save sessions to localStorage
+  const saveSessions = (updated: ChatSession[]) => {
+    setSessions(updated);
     try {
-      const res = await fetch(`${url.replace(/\/$/, "")}/health`);
-      setStatus(res.ok ? "connected" : "offline");
-    } catch {
-      setStatus("offline");
+      localStorage.setItem(SESSIONS_STORAGE_KEY, JSON.stringify(updated));
+    } catch (e) {
+      console.error("Failed to save chat sessions:", e);
     }
   };
 
@@ -73,6 +79,41 @@ export default function Home() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Handle switching to a past chat session
+  const handleSelectSession = (sessionId: string) => {
+    const target = sessions.find((s) => s.id === sessionId);
+    if (target) {
+      setCurrentSessionId(target.id);
+      setMessages(target.messages || []);
+    }
+  };
+
+  // Start a fresh new chat
+  const handleNewChat = () => {
+    if (isLoading && abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    setCurrentSessionId(null);
+    setMessages([]);
+    setInput("");
+  };
+
+  // Delete an individual chat session
+  const handleDeleteSession = (sessionId: string) => {
+    const updated = sessions.filter((s) => s.id !== sessionId);
+    saveSessions(updated);
+    if (currentSessionId === sessionId) {
+      handleNewChat();
+    }
+  };
+
+  // Clear all sessions
+  const handleClearAllHistory = () => {
+    saveSessions([]);
+    handleNewChat();
+  };
+
+  // Submit message & handle streaming
   const handleSubmit = async (e?: React.FormEvent, customPrompt?: string) => {
     if (e) e.preventDefault();
     const promptToSend = customPrompt || input.trim();
@@ -84,6 +125,7 @@ export default function Home() {
       content: promptToSend,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
+
     const assistantMessageId = `asst-${Date.now()}`;
     const initialAssistantMessage: Message = {
       id: assistantMessageId,
@@ -93,9 +135,19 @@ export default function Home() {
       isStreaming: true,
     };
 
-    setMessages((prev) => [...prev, userMessage, initialAssistantMessage]);
+    const updatedMessages = [...messages, userMessage, initialAssistantMessage];
+    setMessages(updatedMessages);
     setInput("");
     setIsLoading(true);
+
+    // Determine session ID
+    let activeSessionId = currentSessionId;
+    let currentTitle = "";
+    if (!activeSessionId) {
+      activeSessionId = `session_${Date.now()}`;
+      currentTitle = promptToSend.slice(0, 36) + (promptToSend.length > 36 ? "..." : "");
+      setCurrentSessionId(activeSessionId);
+    }
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -113,8 +165,8 @@ export default function Home() {
         body: JSON.stringify({
           model: "Vyrex Hyperion 3",
           messages: conversationHistory,
-          temperature,
-          max_tokens: maxTokens,
+          temperature: 0.0,
+          max_tokens: 512,
           stream: true,
         }),
       });
@@ -147,18 +199,51 @@ export default function Home() {
                       : msg
                   )
                 );
-              } catch { /* skip */ }
+              } catch {
+                // Skip incomplete chunks
+              }
             }
           }
         }
       }
 
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === assistantMessageId ? { ...msg, isStreaming: false } : msg
-        )
+      // Finalize assistant message
+      const finalMessages = updatedMessages.map((msg) =>
+        msg.id === assistantMessageId
+          ? { ...msg, content: assistantText, isStreaming: false }
+          : msg
       );
-      setStatus("connected");
+      setMessages(finalMessages);
+
+      // Save to sessions in localStorage
+      setSessions((prevSessions) => {
+        const existingIdx = prevSessions.findIndex((s) => s.id === activeSessionId);
+        let nextSessions: ChatSession[];
+        if (existingIdx >= 0) {
+          nextSessions = [...prevSessions];
+          nextSessions[existingIdx] = {
+            ...nextSessions[existingIdx],
+            messages: finalMessages,
+            updatedAt: Date.now(),
+          };
+        } else {
+          const newSession: ChatSession = {
+            id: activeSessionId!,
+            title: currentTitle || promptToSend.slice(0, 36),
+            messages: finalMessages,
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          };
+          nextSessions = [newSession, ...prevSessions];
+        }
+        try {
+          localStorage.setItem(SESSIONS_STORAGE_KEY, JSON.stringify(nextSessions));
+        } catch (e) {
+          console.error("Storage error:", e);
+        }
+        return nextSessions;
+      });
+
     } catch (err: any) {
       if (err.name === "AbortError") {
         setMessages((prev) =>
@@ -174,13 +259,12 @@ export default function Home() {
             msg.id === assistantMessageId
               ? {
                   ...msg,
-                  content: "⚠️ Could not reach the Vyrex backend. Please check your settings.",
+                  content: "⚠️ Could not reach the Vyrex backend on localhost:8000. Please ensure the backend is running.",
                   isStreaming: false,
                 }
               : msg
           )
         );
-        setStatus("offline");
       }
     } finally {
       setIsLoading(false);
@@ -189,24 +273,31 @@ export default function Home() {
   };
 
   const handleStop = () => abortControllerRef.current?.abort();
-  const handleClearHistory = () => setMessages([]);
 
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-[#0d0d0d] transition-colors duration-300">
-
+      {/* Top Header — Clean with Chat History toggle and Theme Toggle ONLY */}
       <Header
-        onOpenSettings={() => setIsSettingsOpen(true)}
-        onOpenCreator={() => setIsCreatorOpen(true)}
-        status={status}
-        apiUrl={apiUrl}
+        onOpenHistory={() => setIsHistoryOpen(true)}
+        historyCount={sessions.length}
+      />
+
+      {/* Slide-out Chat History Drawer */}
+      <ChatHistorySidebar
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+        sessions={sessions}
+        currentSessionId={currentSessionId}
+        onSelectSession={handleSelectSession}
+        onNewChat={handleNewChat}
+        onDeleteSession={handleDeleteSession}
+        onClearAll={handleClearAllHistory}
       />
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-6 flex flex-col justify-between">
-
         {messages.length === 0 ? (
-          /* ── Welcome / Empty state ── */
+          /* ── Welcome Screen ── */
           <div className="my-auto py-12 flex flex-col items-center text-center animate-fade-in">
-
             {/* Logo */}
             <div className="relative w-28 h-28 mb-6 drop-shadow-xl">
               <Image
@@ -268,7 +359,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* ── Input Card ── */}
+        {/* ── Chat Input Card ── */}
         <div className="sticky bottom-4 z-20 mt-auto">
           <form
             onSubmit={handleSubmit}
@@ -298,32 +389,24 @@ export default function Home() {
               />
             </div>
 
-            {/* Bottom toolbar */}
+            {/* Bottom Toolbar */}
             <div className="flex items-center justify-between px-3.5 pb-3 pt-1">
-
-              {/* Left controls */}
+              {/* Left Controls */}
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
-                  title="Attach / New"
-                  className="p-1.5 rounded-lg text-gray-400
-                    hover:text-red-600 dark:hover:text-red-400
-                    hover:bg-red-50 dark:hover:bg-red-950/30
-                    transition-colors"
+                  onClick={handleNewChat}
+                  title="New Chat"
+                  className="flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors border border-gray-200 dark:border-[#2a2a2a]"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>New Chat</span>
                 </button>
-                <div className="px-2.5 py-1 text-xs font-medium rounded-lg
-                  bg-gray-100 dark:bg-[#1f1f1f]
-                  text-gray-700 dark:text-gray-300
-                  border border-gray-200 dark:border-[#2a2a2a]">
-                  Chat
-                </div>
                 {messages.length > 0 && (
                   <button
                     type="button"
-                    onClick={handleClearHistory}
-                    title="Clear conversation"
+                    onClick={handleNewChat}
+                    title="Clear current view"
                     className="flex items-center gap-1 px-2 py-1 text-xs rounded-lg
                       text-gray-400
                       hover:text-red-600 dark:hover:text-red-400
@@ -336,7 +419,7 @@ export default function Home() {
                 )}
               </div>
 
-              {/* Right: Model label + Send/Stop */}
+              {/* Right: Model Name & Send / Stop Button */}
               <div className="flex items-center gap-3">
                 <span className="text-xs sm:text-sm font-medium
                   text-gray-500 dark:text-gray-400
@@ -378,21 +461,6 @@ export default function Home() {
           </p>
         </div>
       </main>
-
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        apiUrl={apiUrl}
-        setApiUrl={handleUpdateApiUrl}
-        temperature={temperature}
-        setTemperature={setTemperature}
-        maxTokens={maxTokens}
-        setMaxTokens={setMaxTokens}
-      />
-      <CreatorModal
-        isOpen={isCreatorOpen}
-        onClose={() => setIsCreatorOpen(false)}
-      />
     </div>
   );
 }

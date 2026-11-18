@@ -1,21 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { Sliders, Info, Github } from "lucide-react";
+import { History } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 interface HeaderProps {
-  onOpenSettings: () => void;
-  onOpenCreator: () => void;
-  status: "connected" | "connecting" | "offline";
-  apiUrl: string;
+  onOpenHistory?: () => void;
+  historyCount?: number;
 }
 
 export function Header({
-  onOpenSettings,
-  onOpenCreator,
-  status,
-  apiUrl,
+  onOpenHistory,
+  historyCount = 0,
 }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-md
@@ -25,9 +21,32 @@ export function Header({
       transition-colors duration-300">
       <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
 
-        {/* ── Logo + Brand ── */}
+        {/* ── Left: History Button + Logo + Brand ── */}
         <div className="flex items-center gap-3">
-          <div className="relative w-10 h-10 flex-shrink-0">
+          {/* Chat History Toggle Button */}
+          {onOpenHistory && (
+            <button
+              onClick={onOpenHistory}
+              aria-label="Open Chat History"
+              title="Chat History"
+              className="relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200
+                bg-white dark:bg-[#1a1a1e]
+                hover:bg-red-50 dark:hover:bg-red-950/30
+                border border-gray-200 dark:border-[#2a2a2a]
+                text-gray-600 dark:text-gray-300
+                hover:text-red-600 dark:hover:text-red-400 shadow-sm"
+            >
+              <History className="w-4 h-4" />
+              {historyCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-600 text-[10px] font-bold text-white flex items-center justify-center shadow">
+                  {historyCount > 9 ? "9+" : historyCount}
+                </span>
+              )}
+            </button>
+          )}
+
+          {/* Logo */}
+          <div className="relative w-9 h-9 flex-shrink-0">
             <Image
               src="/vyrex-symbol.png"
               alt="Vyrex AI"
@@ -36,6 +55,8 @@ export function Header({
               priority
             />
           </div>
+
+          {/* Brand Titles */}
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-extrabold text-base tracking-tight text-gray-900 dark:text-white">
@@ -54,75 +75,9 @@ export function Header({
           </div>
         </div>
 
-        {/* ── Right Controls ── */}
+        {/* ── Right Controls: ONLY Dark and Light Mode ── */}
         <div className="flex items-center gap-2">
-
-          {/* Status dot */}
-          <div
-            title={`Backend: ${apiUrl}`}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
-              bg-gray-100 dark:bg-[#1f1f1f]
-              border border-gray-200 dark:border-[#2a2a2a]
-              text-gray-600 dark:text-gray-300"
-          >
-            <span className={`w-2 h-2 rounded-full ${
-              status === "connected"
-                ? "bg-green-500 shadow-sm shadow-green-500 animate-pulse"
-                : status === "connecting"
-                ? "bg-amber-400 animate-pulse"
-                : "bg-red-500"
-            }`} />
-            <span className="text-[11px] capitalize hidden md:inline">{status}</span>
-          </div>
-
-          {/* Creator Info */}
-          <button
-            onClick={onOpenCreator}
-            aria-label="About Creator"
-            title="About Creator & Architecture"
-            className="flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200
-              bg-white dark:bg-[#1f1f1f]
-              hover:bg-red-50 dark:hover:bg-red-950/30
-              border border-gray-200 dark:border-[#2a2a2a]
-              text-gray-500 dark:text-gray-400
-              hover:text-red-600 dark:hover:text-red-400"
-          >
-            <Info className="w-4 h-4" />
-          </button>
-
-          {/* Settings */}
-          <button
-            onClick={onOpenSettings}
-            aria-label="Settings"
-            title="Configure Backend & Parameters"
-            className="flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200
-              bg-white dark:bg-[#1f1f1f]
-              hover:bg-red-50 dark:hover:bg-red-950/30
-              border border-gray-200 dark:border-[#2a2a2a]
-              text-gray-500 dark:text-gray-400
-              hover:text-red-600 dark:hover:text-red-400"
-          >
-            <Sliders className="w-4 h-4" />
-          </button>
-
-          {/* Theme Toggle */}
           <ThemeToggle />
-
-          {/* GitHub */}
-          <a
-            href="https://github.com/subornoroychowdhury7-afk/Vyrex-AI"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="View on GitHub"
-            className="flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200
-              bg-white dark:bg-[#1f1f1f]
-              hover:bg-red-50 dark:hover:bg-red-950/30
-              border border-gray-200 dark:border-[#2a2a2a]
-              text-gray-500 dark:text-gray-400
-              hover:text-red-600 dark:hover:text-red-400"
-          >
-            <Github className="w-4 h-4" />
-          </a>
         </div>
       </div>
     </header>
