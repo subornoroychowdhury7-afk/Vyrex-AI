@@ -19,10 +19,10 @@ class ChatCompletionRequest(BaseModel):
     messages: List[ChatMessage] = Field(..., description="List of messages in conversation")
     temperature: Optional[float] = Field(default=0.0, ge=0.0, le=2.0)
     top_p: Optional[float] = Field(default=0.9, ge=0.0, le=1.0)
-    max_tokens: Optional[int] = Field(default=512, ge=1, le=4096)
+    max_tokens: Optional[int] = Field(default=384, ge=1, le=4096)
     stream: Optional[bool] = Field(default=False, description="Whether to stream response chunks via SSE")
     stop: Optional[Union[str, List[str]]] = Field(default=None, description="Optional stop sequences")
-    repetition_penalty: Optional[float] = Field(default=1.1, ge=1.0, le=2.0)
+    repetition_penalty: Optional[float] = Field(default=1.2, ge=1.0, le=2.0)
     boundary_bias: Optional[float] = Field(default=4.8, description="VYREX calibrated stop boundary bias")
 
 

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { User, Sparkles, Copy, Check } from "lucide-react";
+import { User, Copy, Check } from "lucide-react";
 
 export interface Message {
   id: string;
@@ -50,8 +50,6 @@ function StreamingContent({ content }: { content: string }) {
 
 export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === "user";
-  const isThinking = !isUser && !!message.isStreaming && message.content === "";
-  const isStreaming = !isUser && !!message.isStreaming && message.content !== "";
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const copyToClipboard = (text: string, index: number) => {
@@ -108,48 +106,30 @@ export function ChatMessage({ message }: ChatMessageProps) {
   };
 
   return (
-    <div
-      className={`flex gap-3.5 py-4 px-4 sm:px-5 rounded-2xl transition-colors duration-200 ${
-        isUser
-          ? "bg-red-50/70 dark:bg-[#1a0a0a]/60 border border-red-100 dark:border-red-950/40"
-          : "bg-white dark:bg-[#161616] border border-gray-200 dark:border-[#2a2a2a] shadow-sm"
-      }`}
-    >
+    <div className="flex gap-3.5 py-3 px-4 sm:px-6">
       {/* ─── Avatar ─── */}
-      <div
-        className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm relative ${
-          isUser
-            ? "bg-gradient-to-br from-gray-700 to-gray-800 text-white"
-            : isThinking
-            ? "bg-gradient-to-br from-red-600 to-red-800 text-white shadow-red-500/30 shadow-lg animate-vyrex-spin animate-ring-pulse"
-            : isStreaming
-            ? "bg-gradient-to-br from-red-600 to-red-800 text-white shadow-red-500/20 shadow-md animate-pulse"
-            : "bg-gradient-to-br from-red-600 to-red-800 text-white shadow-red-500/20 shadow-md"
-        }`}
-      >
+      <div className={`w-8 h-8 flex items-center justify-center flex-shrink-0 ${
+        isUser ? "rounded-xl bg-gradient-to-br from-gray-700 to-gray-800 text-white shadow-sm" : ""
+      }`}>
         {isUser ? (
           <User className="w-4 h-4" />
-        ) : isThinking ? (
-          /* Entire avatar spins — Vyrex symbol stays centered inside */
+        ) : message.isStreaming ? (
+          /* Spinning while AI is answering (thinking + streaming) */
           <Image
             src="/vyrex-symbol.png"
             alt="Vyrex"
-            width={18}
-            height={18}
-            className="drop-shadow-sm"
-            style={{ filter: "brightness(0) invert(1)" }}
-          />
-        ) : isStreaming ? (
-          /* Avatar pulses — symbol stays still */
-          <Image
-            src="/vyrex-symbol.png"
-            alt="Vyrex"
-            width={18}
-            height={18}
-            className="animate-pulse drop-shadow-sm"
+            width={28}
+            height={28}
+            className="animate-vyrex-spin"
           />
         ) : (
-          <Sparkles className="w-4 h-4" />
+          /* Static when AI is done */
+          <Image
+            src="/vyrex-symbol.png"
+            alt="Vyrex"
+            width={28}
+            height={28}
+          />
         )}
       </div>
 
@@ -169,7 +149,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
         </div>
 
         <div className="text-gray-800 dark:text-gray-200">
-          {isThinking ? (
+          {!isUser && message.isStreaming && message.content === "" ? (
             /* ── Thinking state: animated dots ── */
             <div className="flex items-center gap-1.5 h-5 mt-1">
               <span className="text-[11px] text-red-400/70 dark:text-red-400/60 mr-1 font-medium tracking-wide">
@@ -178,7 +158,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
               {[1, 2, 3].map((i) => (
                 <span
                   key={i}
-                  className={`thinking-dot inline-block w-1.5 h-1.5 rounded-full bg-red-500`}
+                  className="thinking-dot inline-block w-1.5 h-1.5 rounded-full bg-red-500"
                 />
               ))}
             </div>

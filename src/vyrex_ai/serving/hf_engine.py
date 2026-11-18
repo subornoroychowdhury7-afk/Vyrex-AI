@@ -83,8 +83,16 @@ class CalibratedStopLogitsProcessor(LogitsProcessor):
             return scores
 
         last_id = int(input_ids[0, -1].item())
+        # Progressive boundary termination bias:
+        # As answer gets longer, make natural punctuation boundaries even stronger exit points
+        effective_bias = self.boundary_bias
+        if new_tokens > 120:
+            effective_bias += 2.0
+        if new_tokens > 200:
+            effective_bias += 4.0
+
         if last_id in self.boundary_ids:
-            scores[:, self.stop_token_id] += self.boundary_bias
+            scores[:, self.stop_token_id] += effective_bias
         return scores
 
 
@@ -177,12 +185,13 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
             prompt_len = inputs["input_ids"].shape[1]
 
             do_sample = bool(request.temperature and request.temperature >= 0.2)
-            repetition_penalty = getattr(request, "repetition_penalty", 1.1) or 1.1
+            repetition_penalty = getattr(request, "repetition_penalty", 1.2) or 1.2
             boundary_bias = getattr(request, "boundary_bias", 4.8) or 4.8
             gen_kwargs = {
                 "max_new_tokens": request.max_tokens,
                 "do_sample": do_sample,
                 "repetition_penalty": repetition_penalty,
+                "no_repeat_ngram_size": 4,
                 "eos_token_id": [IM_END_ID, EOS_ID],
                 "pad_token_id": EOS_ID,
                 "use_cache": True,
@@ -268,12 +277,13 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
         streamer = TextIteratorStreamer(self.tokenizer, skip_prompt=True, skip_special_tokens=True)
 
         do_sample = bool(request.temperature and request.temperature >= 0.2)
-        repetition_penalty = getattr(request, "repetition_penalty", 1.1) or 1.1
+        repetition_penalty = getattr(request, "repetition_penalty", 1.2) or 1.2
         boundary_bias = getattr(request, "boundary_bias", 4.8) or 4.8
         gen_kwargs = {
             "max_new_tokens": request.max_tokens,
             "do_sample": do_sample,
             "repetition_penalty": repetition_penalty,
+            "no_repeat_ngram_size": 4,
             "eos_token_id": [IM_END_ID, EOS_ID],
             "pad_token_id": EOS_ID,
             "use_cache": True,
@@ -306,6 +316,7 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
         loop = asyncio.get_running_loop()
         stop_signals = ["<|im_end|>", "<|im_start|>", "\nuser:", "\nUser:", "\nYou:", "\nHuman:"]
         accumulated = ""
+        recent_words: List[str] = []
 
         def _get_next_token():
             try:
@@ -324,6 +335,16 @@ class HuggingFaceQLoRAEngine(BaseInferenceEngine):
                 if sig in accumulated:
                     should_stop = True
                     break
+
+            # Circuit breaker: kill runaway repetitive attractor loops
+            clean_word = token.strip().lower()
+            if clean_word and len(clean_word) > 2:
+                recent_words.append(clean_word)
+                if len(recent_words) > 12:
+                    recent_words.pop(0)
+                if len(recent_words) >= 3 and recent_words[-1] == recent_words[-2] == recent_words[-3]:
+                    should_stop = True
+
             if should_stop:
                 break
 

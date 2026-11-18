@@ -232,7 +232,8 @@ export default function Home() {
           model: "Vyrex Hyperion 3",
           messages: conversationHistory,
           temperature: 0.0,
-          max_tokens: 512,
+          max_tokens: 384,
+          repetition_penalty: 1.2,
           stream: true,
         }),
       });
