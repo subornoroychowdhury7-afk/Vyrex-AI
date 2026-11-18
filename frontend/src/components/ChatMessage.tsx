@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { User, Sparkles, Copy, Check } from "lucide-react";
 
 export interface Message {
@@ -15,8 +16,42 @@ interface ChatMessageProps {
   message: Message;
 }
 
+// Split content into "settled" (old) and "new" (latest chunk) portions
+// so we only fade the freshly arrived text.
+function StreamingContent({ content }: { content: string }) {
+  const prevRef = useRef<string>("");
+  const settled = prevRef.current;
+  const newChunk = content.slice(settled.length);
+
+  // After render, advance settled to current content
+  useEffect(() => {
+    prevRef.current = content;
+  });
+
+  return (
+    <>
+      {settled && (
+        <span className="whitespace-pre-wrap leading-relaxed text-sm">
+          {settled}
+        </span>
+      )}
+      {newChunk && (
+        // key forces a fresh animation each time newChunk changes
+        <span
+          key={content.length}
+          className="whitespace-pre-wrap leading-relaxed text-sm token-new"
+        >
+          {newChunk}
+        </span>
+      )}
+    </>
+  );
+}
+
 export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === "user";
+  const isThinking = !isUser && !!message.isStreaming && message.content === "";
+  const isStreaming = !isUser && !!message.isStreaming && message.content !== "";
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const copyToClipboard = (text: string, index: number) => {
@@ -76,29 +111,56 @@ export function ChatMessage({ message }: ChatMessageProps) {
     <div
       className={`flex gap-3.5 py-4 px-4 sm:px-5 rounded-2xl transition-colors duration-200 ${
         isUser
-          /* User bubble — light: very light red tint / dark: near-black with subtle red border */
           ? "bg-red-50/70 dark:bg-[#1a0a0a]/60 border border-red-100 dark:border-red-950/40"
-          /* AI bubble — light: white card / dark: dark surface */
           : "bg-white dark:bg-[#161616] border border-gray-200 dark:border-[#2a2a2a] shadow-sm"
       }`}
     >
-      {/* Avatar */}
+      {/* ─── Avatar ─── */}
       <div
-        className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm ${
+        className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm relative ${
           isUser
             ? "bg-gradient-to-br from-gray-700 to-gray-800 text-white"
+            : isThinking
+            ? "bg-gradient-to-br from-red-600 to-red-800 text-white shadow-red-500/30 shadow-lg animate-vyrex-spin animate-ring-pulse"
+            : isStreaming
+            ? "bg-gradient-to-br from-red-600 to-red-800 text-white shadow-red-500/20 shadow-md animate-pulse"
             : "bg-gradient-to-br from-red-600 to-red-800 text-white shadow-red-500/20 shadow-md"
         }`}
       >
-        {isUser ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+        {isUser ? (
+          <User className="w-4 h-4" />
+        ) : isThinking ? (
+          /* Entire avatar spins — Vyrex symbol stays centered inside */
+          <Image
+            src="/vyrex-symbol.png"
+            alt="Vyrex"
+            width={18}
+            height={18}
+            className="drop-shadow-sm"
+            style={{ filter: "brightness(0) invert(1)" }}
+          />
+        ) : isStreaming ? (
+          /* Avatar pulses — symbol stays still */
+          <Image
+            src="/vyrex-symbol.png"
+            alt="Vyrex"
+            width={18}
+            height={18}
+            className="animate-pulse drop-shadow-sm"
+          />
+        ) : (
+          <Sparkles className="w-4 h-4" />
+        )}
       </div>
 
-      {/* Message Content */}
+      {/* ─── Message Content ─── */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
-          <span className={`text-xs font-semibold ${
-            isUser ? "text-gray-700 dark:text-gray-300" : "text-red-600 dark:text-red-400"
-          }`}>
+          <span
+            className={`text-xs font-semibold ${
+              isUser ? "text-gray-700 dark:text-gray-300" : "text-red-600 dark:text-red-400"
+            }`}
+          >
             {isUser ? "You" : "Vyrex AI"}
           </span>
           <span className="text-[11px] text-gray-400 dark:text-gray-500 font-mono">
@@ -107,9 +169,29 @@ export function ChatMessage({ message }: ChatMessageProps) {
         </div>
 
         <div className="text-gray-800 dark:text-gray-200">
-          {renderContent(message.content)}
-          {message.isStreaming && (
-            <span className="inline-block w-2 h-4 ml-1 bg-red-500 animate-pulse rounded-sm" />
+          {isThinking ? (
+            /* ── Thinking state: animated dots ── */
+            <div className="flex items-center gap-1.5 h-5 mt-1">
+              <span className="text-[11px] text-red-400/70 dark:text-red-400/60 mr-1 font-medium tracking-wide">
+                Thinking
+              </span>
+              {[1, 2, 3].map((i) => (
+                <span
+                  key={i}
+                  className={`thinking-dot inline-block w-1.5 h-1.5 rounded-full bg-red-500`}
+                />
+              ))}
+            </div>
+          ) : message.isStreaming ? (
+            /* ── Streaming state: fade-in new tokens ── */
+            <>
+              <StreamingContent content={message.content} />
+              {/* blinking cursor while streaming */}
+              <span className="inline-block w-[2px] h-4 ml-0.5 align-middle bg-red-500 animate-pulse rounded-sm" />
+            </>
+          ) : (
+            /* ── Done: render full content normally ── */
+            renderContent(message.content)
           )}
         </div>
       </div>
